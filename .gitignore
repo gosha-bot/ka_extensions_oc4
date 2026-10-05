@@ -1,0 +1,16 @@
+/.svn
+*.zip
+/extension/ka_hack
+*.diff
+/config.php
+/admin1/config.php
+/system/storage1/backup
+/system/storage1/cache
+/system/storage1/cache.kamod
+/system/storage1/download
+/system/storage1/logs
+/system/storage1/marketplace
+/system/storage1/session
+/system/storage1/upload
+/image/cache
+/tmp_pack/

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+  <name>Ka Extensions Ocmod</name>
+  <code>ka_extensions</code>
+  <version>1.1</version>
+  <author>Karapuz Team</author>
+  <link>http://www.ka-station.com</link>
+  <file path="system\framework.php">
+    <operation>
+      <search>
+        <![CDATA[$autoloader = new \Opencart\System\Engine\Autoloader();]]>
+      </search>
+      <add position="after">
+        <![CDATA[//kamod
+if (file_exists(DIR_EXTENSION . '/ka_extensions/engine/startup.php')) {
+	; require_once(DIR_EXTENSION . '/ka_extensions/engine/startup.php');
+}
+//kamod]]></add>
+    </operation>
+  </file>
+  <file path="admin\controller\marketplace\modification.php">
+    <operation>
+      <search>
+        <![CDATA[n index(]]>
+      </search>
+      <add position="after">
+        <![CDATA[//kamod
+$this->load->model('extension/ka_extensions/common');	
+$this->model_extension_ka_extensions_common->checkFrameworkPatch();
+//kamod]]></add>
+    </operation>
+  </file>
+  <file path="admin\controller\user\user_permission.php">
+    <operation>
+      <search>
+        <![CDATA[$results = glob(DIR_EXTENSION . '*/admin/controller/*/*.php')]]>
+      </search>
+      <add position="after">
+        <![CDATA[//kamod
+		$results2 = glob(DIR_EXTENSION . '*/admin/controller/*.php');
+		$results = array_unique(array_merge($results, $results2));
+//kamod]]></add>
+    </operation>
+  </file>
+</modification>

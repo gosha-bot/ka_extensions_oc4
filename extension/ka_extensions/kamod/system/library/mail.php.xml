@@ -1,0 +1,8 @@
+<kapatch version="1.0">
+	<changes>
+		<operation skip="true" type="replace">
+			<search><![CDATA[private array]]></search>
+			<text><![CDATA[protected array]]></text>
+		</operation>
+	</changes>
+</kapatch>

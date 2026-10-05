@@ -1,0 +1,24 @@
+{#
+    $Project$
+    $Author$
+    $Version$ ($Revision$)
+#}
+
+{% if (name) %} 
+	<select name="{{ name }}" {% if (extra) %} {{ extra }} {% endif %} class="form-control">
+		{% if (first_line) %} 
+		  <option value="">{{ first_line }}</option>
+		{% endif %} 
+		{% for k,v in options %} 
+		  <option value="{{ k }}" {% if (value == k) %} selected="selected" {% endif %}>{{ v }}</option>
+		{% endfor %}
+	</select>
+
+{% else %} 
+
+ {% if (value is defined and options[value] is defined) %}
+ 	{{ options[value] }}
+ {% else %} 
+ 	{{ "Undefined" }}
+ {% endif %}
+{% endif %}

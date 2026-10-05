@@ -1,0 +1,3 @@
+ver 5.1.1.0
+- fully refactored ka-extensions engine. It does not depend on vendor.php file anymore. Namespace rules has changed;
+- compatibility lifted up to Opencart 4.1.0.3 (with properly working ocmod)
