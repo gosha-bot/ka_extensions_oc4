@@ -28,8 +28,11 @@ class Mail {
 	public $images;
 	public $store_config;
 
-	/*
-		$language_code - it can language_id or language code (number or string)
+	/**
+	 Prepares an email: loads the language, creates the OpenCart mail object and loads store information and settings.
+
+	 $language_code — language id or code (e.g. 'en-gb'); store default if empty.
+	 $store_id — store id.
 	*/
 	function __construct($language_code = null, $store_id = 0) {
 
@@ -82,10 +85,17 @@ class Mail {
 	}
 
 
-/*
-	$tpl has to contain the template name without the extension, Example:
-		extension/ka_extensions/product_warranty/mail/product_warranty_created
-*/		
+	/**
+	 Renders the HTML and text templates and sends the email. Images are embedded or linked depending on the settings.
+
+	 $from — sender email; store email if empty.
+	 $to — recipient email.
+	 $subject — subject or language key.
+	 $tpl — template name without extension, e.g. extension/ka_extensions/product_warranty/mail/product_warranty_created.
+	 $extra — options: 'send_content' wraps the content with common header and footer, 'reply_to' sets Reply-To.
+
+	 @return bool True if sent, false if no template was found.
+	*/
 	public function send($from, $to, $subject, $tpl, $extra = array()) {
 
 		if (empty($from)) {
@@ -190,6 +200,12 @@ class Mail {
 		return true;
 	}
 	
+	/**
+	 Adds a file attachment.
+
+	 $filename — path to the file.
+	 $name — attachment name; the file name if empty.
+	*/
 	public function addAttachment($filename, $name = '') {
 		if (!empty($name)) {
 			$this->mail->addNamedAttachment($filename, $name);
@@ -198,21 +214,30 @@ class Mail {
 		}
 	}
 	
+	/**
+	 Sends an email wrapped with the common header and footer templates.
+
+	 $to — recipient email.
+	 $subject — subject or language key.
+	 $tpl — template name without extension.
+	 $from — sender email; store email if empty.
+	 $extra — additional options, see send().
+
+	 @return bool True if sent.
+	*/
 	public function sendContent($to, $subject, $tpl, $from = '', $extra = []) {
 		$extra['send_content'] = 1;
 		$result = $this->send($from, $to, $subject, $tpl, $extra);
 		return $result;
 	}
 
-	/*
-		Tries to load a template for the specific language. First, it tries to load a template
-		in the same directory but with '_<language code>' suffix like:
-		mail/order_de.twig
-		
-		If it does not exist, it loads the standard template as usual
-		mail/order.twig
-		
-		The function may cause an exception when the standard template does not exist.
+	/**
+	 Renders a template for the mail language. First it tries the template with the '_<language code>' suffix (e.g. mail/order_de.twig), then the standard one (mail/order.twig).
+
+	 $template — template name without extension.
+	 $data — template variables.
+
+	 @return string Rendered content. Throws MailException if the result is empty.
 	*/
 	public function loadViewForLanguage($template, $data) {
 

@@ -14,6 +14,11 @@ trait TraitModel {
 
 	protected $lastError;
 	
+	/**
+	 Returns the last error.
+
+	 @return mixed Last error.
+	*/
 	public function getLastError() {
 		return $this->lastError;
 	}

@@ -17,6 +17,11 @@ trait TraitController {
 
 	protected $is_render_disabled = false;
 
+	/**
+	 Returns the template data merged with the temporary view data from the loader.
+
+	 @return array Template data.
+	*/
 	protected function getRenderData() {
 		$data = $this->load->getTmpViewData();
 		if (!empty($data)) {
@@ -25,24 +30,38 @@ trait TraitController {
 		return $this->data;
 	}
 
+	/**
+	 Returns the temporary view route from the loader.
+
+	 @return string Template route.
+	*/
 	protected function getRenderTemplate() {
 		return $this->load->getTmpViewRoute();
 	}
 
-	/*
-		These two methods are added to unify the interface with our "KaController" 
+	/**
+	 Disables rendering so child classes can change data or the template before output. Unifies the interface with KaController.
 	*/
 	protected function disableRender() {
 		$this->is_render_disabled = true;
 		$this->load->disableRender();
 	}
 
+	/**
+	 Enables rendering again. Unifies the interface with KaController.
+	*/
 	protected function enableRender() {
 		$this->is_render_disabled = false;
 		$this->load->enableRender();
 	}
 	
 	
+	/**
+	 Adds a message shown at the top of the page; stored in the session.
+
+	 $msg — message text or array of texts.
+	 $type — message type, 'S' by default.
+	*/
 	protected function addTopMessage($msg, $type = 'S') {
 	
 		if (!is_array($msg)) {
@@ -58,6 +77,13 @@ trait TraitController {
 	}
 
 	
+	/**
+	 Returns top page messages from the session.
+
+	 $clear — remove messages from the session.
+
+	 @return array|null Messages or null.
+	*/
 	protected function getTopMessages($clear = true) {
 
 		if (isset($this->session->data['ka_top_messages'])) {
@@ -72,17 +98,20 @@ trait TraitController {
 		return $top;
 	}
 	
-	/*
-		Rendering can be disabled for parent classes thus child classes may change the data
-		or template file before output. Example:
-		
-		public function index() {
-			$this->disableRender();
-			parent::index();
-			$this->enableRender();
-			$this->response->setOutput($this->render());
-		}
-		
+	/**
+	 Renders the template with data and page blocks (children or the standard header, footer and columns). Returns an empty string when rendering is disabled. Example:
+
+	 public function index() {
+	     $this->disableRender();
+	     parent::index();
+	     $this->enableRender();
+	     $this->response->setOutput($this->render());
+	 }
+
+	 $tpl — template name.
+	 $data — template variables merged with existing data.
+
+	 @return string Rendered page.
 	*/
 	protected function render($tpl = '', $data = array()) {
 
@@ -121,10 +150,12 @@ trait TraitController {
 	}
 	
 
-	/*
-		$template - name of the template inside the module directory (when namespace is available)
-		$data     - array of template variables
-	*/		
+	/**
+	 Renders the page and sets it as the response output. Sets heading_title and page_id when missing and adds Ka Extensions CSS and JS.
+
+	 $template — template name inside the module directory.
+	 $data — template variables; replace existing data.
+	*/
 	protected function showPage($template = '', $data = array()) {
 
 		if (!empty($data)) {
@@ -156,6 +187,9 @@ trait TraitController {
 	}
 	
 	
+	/**
+	 Loads admin page blocks (header, left column, footer) and user_token into the data.
+	*/
 	protected function loadAdminPageBlocks() {
 		if (!empty($this->session->data['user_token'])) {
 			$this->data['user_token'] = $this->session->data['user_token'];
@@ -166,6 +200,9 @@ trait TraitController {
 	}
 
 	
+	/**
+	 Loads storefront page blocks (header, footer, columns, content top and bottom) into the data.
+	*/
 	protected function loadCustomerPageBlocks() {
 		$this->data['column_left'] = $this->load->controller('common/column_left');
 		$this->data['column_right'] = $this->load->controller('common/column_right');
@@ -177,6 +214,11 @@ trait TraitController {
 	
 	protected $lastError;
 	
+	/**
+	 Returns the last error.
+
+	 @return mixed Last error.
+	*/
 	public function getLastError() {
 		return $this->lastError;
 	}

@@ -42,6 +42,13 @@ class UrlParams {
 	
 	protected $built_cache;
 	
+	/**
+	 Reads page parameters listed in the defaults from the request GET.
+
+	 $request — OpenCart request object.
+	 $default_params — parameter => default value pairs.
+	 $keep_original — do not trim values.
+	*/
 	function __construct($request, $default_params, $keep_original = false) {
 
 		$this->request = $request;
@@ -64,6 +71,13 @@ class UrlParams {
 	}
 	
 	
+	/**
+	 Returns parameters merged with defaults and optional overrides.
+
+	 $arg_params — parameters overriding the result.
+
+	 @return array Parameters.
+	*/
 	public function getParams($arg_params = null) {
 
 		if (empty($this->default_params)) {
@@ -79,6 +93,13 @@ class UrlParams {
 	}
 	
 
+	/**
+	 Returns a parameter value or its default.
+
+	 $name — parameter name.
+
+	 @return mixed Value or null.
+	*/
 	public function getParam($name) {
 	
 		if (isset($this->params[$name])) {
@@ -92,6 +113,13 @@ class UrlParams {
 		return null;
 	}
 	
+	/**
+	 Builds a query string from parameters; the result is cached.
+
+	 $params — parameters.
+
+	 @return string Query string.
+	*/
 	protected function buildParams($params) {
 	
 		if (!empty($this->built_cache)) {
@@ -109,8 +137,12 @@ class UrlParams {
 	}
 	
 	
-	/*
-		Return url for sorting
+	/**
+	 Returns a URL query string for sorting by a field. The order is toggled when the field is already sorted.
+
+	 $field — sort field.
+
+	 @return string Query string.
 	*/
 	function getUrlSort($field) {
 	
@@ -136,17 +168,22 @@ class UrlParams {
 		return $url;
 	}
 	
+	/**
+	 Merges new values into the current parameters.
+
+	 $params — parameters to update.
+	*/
 	function updateParams($params) {
 		$this->built_cache = null;
 		$this->params = array_merge($this->params, $params);
 	}
 	
-	/*
-		Returns URL parameters exploded by '&'. Parameters can be extended or overwritten with $params
-		array.
-		
-		The parameter can be removed if it is set to null
-		
+	/**
+	 Returns URL parameters joined by '&'. Parameters can be extended or overwritten; a null value removes the parameter.
+
+	 $params — parameters to add or override.
+
+	 @return string Query string.
 	*/
 	function getUrl($params = null) {
 	

@@ -158,8 +158,11 @@ class KaURLify {
 	protected static $language = '';
 
 	/**
-	 * Initializes the character map.
-	 */
+	 Builds the character map and regular expression, giving priority to the map of the specified language.
+
+	 $language — language code whose map takes priority.
+	 $is_national — keep the characters of the language map unchanged.
+	*/
 	protected static function init ($language = "", $is_national = false) {
 	
 		if (count (self::$map) > 0 && (($language == "") || ($language == self::$language))) {
@@ -196,8 +199,10 @@ class KaURLify {
 	}
 
 	/**
-	 * Add new characters to the list. `$map` should be a hash.
-	 */
+	 Adds new characters to the transliteration list.
+
+	 $map — associative array of character => replacement.
+	*/
 	public static function add_chars ($map) {
 		if (! is_array ($map)) {
 			throw new LogicException ('$map must be an associative array.');
@@ -208,19 +213,24 @@ class KaURLify {
 	}
 
 	/**
-	 * Append words to the remove list. Accepts either single words
-	 * or an array of words.
-	 */
+	 Appends words to the list of words removed by filter().
+
+	 $words — word or array of words.
+	*/
 	public static function remove_words ($words) {
 		$words = is_array ($words) ? $words : array ($words);
 		self::$remove_list = array_merge (self::$remove_list, $words);
 	}
 
 	/**
-	 * Transliterates characters to their ASCII equivalents.
-     * $language specifies a priority for a specific language.
-     * The latter is useful if languages have different rules for the same character.
-	 */
+	 Transliterates characters to their ASCII equivalents.
+
+	 $text — source text.
+	 $language — language whose rules have priority.
+	 $is_national — keep the characters of the specified language.
+
+	 @return string Transliterated text.
+	*/
 	public static function downcode ($text, $language = "", $is_national = false) {
 		self::init ($language, $is_national);
 
@@ -235,15 +245,16 @@ class KaURLify {
 		return $text;
 	}
 
-	/*
-	 * Filters a string, e.g., "Petty theft" to "petty-theft"
-	 
-	 	$string_type - array of different string types
-	 		file     - 
-	 		national - 
-	 		regular  - 
-	 	
-	 */
+	/**
+	 Converts a string to a URL-friendly form, e.g. "Petty theft" to "petty-theft".
+
+	 $text — source text.
+	 $length — maximum length of the result.
+	 $language — language whose rules have priority.
+	 $url_type — result type: 'regular' (ASCII only), 'file' (dots allowed) or 'national' (national characters kept).
+
+	 @return string Filtered lowercase string.
+	*/
 	public static function filter ($text, $length = 90, $language = "", $url_type = 'regular') {
 	
 		if ($url_type == self::URL_NATIONAL) {
@@ -282,8 +293,12 @@ class KaURLify {
 	}
 
 	/**
-	 * Alias of `URLify::downcode()`.
-	 */
+	 Alias of downcode() with default parameters.
+
+	 $text — source text.
+
+	 @return string Transliterated text.
+	*/
 	public static function transliterate ($text) {
 		return self::downcode ($text);
 	}

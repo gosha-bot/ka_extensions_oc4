@@ -14,13 +14,15 @@ trait TraitControllerForm {
 	protected $errors;
 	protected $url_params;
 
-	/*
-		This method is called when the field array should be initialized with actual field value.
-	
-		$k - field code
-		$f - field metadata array
-		$old_data - old data information (data requested from db for example)
-		$new_data - new data information (post array or null).
+	/**
+	 Fills a field with its value: from new data, then old data, then the default value. Formats prices and prepares thumbnails for image fields.
+
+	 $k — field code.
+	 $f — field metadata array.
+	 $old_data — old data, e.g. from the database.
+	 $new_data — new data (POST array) or null.
+
+	 @return array Field with the value.
 	*/
 	protected function getFieldWithData($k, $f, $old_data, $new_data) {
 
@@ -70,10 +72,15 @@ trait TraitControllerForm {
 	}	
 	
 
-	/*
-		Returns fields filled in with data from old and new arrays
-		
-		$new_data is not null when the form was submitted with new values.
+	/**
+	 Fills fields with values from old and new data and attaches errors.
+
+	 $fields — field metadata arrays.
+	 $old_data — old data, e.g. from the database.
+	 $new_data — new data when the form was submitted, otherwise null.
+	 $errors — errors indexed by field code.
+
+	 @return array Fields with values.
 	*/
 	protected function getFieldsWithData($fields, $old_data, $new_data = null, $errors = array()) {
 	
@@ -92,8 +99,12 @@ trait TraitControllerForm {
 	}
 
 	
-	/*
-		Returns a simple array of code->value pairs from the $fields array.
+	/**
+	 Returns code => value pairs from fields.
+
+	 $fields — fields with values.
+
+	 @return array Field values.
 	*/
 	protected function getFieldValues($fields) {
 	
@@ -107,6 +118,15 @@ trait TraitControllerForm {
 	}
 	
 
+	/**
+	 Validates a field (required, presence, number min and max) and writes errors to $this->errors.
+
+	 $code — field code.
+	 $field — field metadata.
+	 $post — submitted data.
+
+	 @return bool False if the field is required but empty or missing. Min and max errors are recorded but still return true.
+	*/
 	protected function validateField($code, $field, $post) {
 	
 		if (!empty($field['required'])) {
@@ -143,6 +163,14 @@ trait TraitControllerForm {
 	}
 	
 
+	/**
+	 Validates all fields.
+
+	 $fields — field metadata arrays.
+	 $post — submitted data.
+
+	 @return bool True if there are no errors.
+	*/
 	protected function validateFields($fields, $post) {
 
 		foreach ($fields as $k => $f) {

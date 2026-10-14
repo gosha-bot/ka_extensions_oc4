@@ -9,10 +9,14 @@
 namespace Opencart\Extension\KaExtensions\System;
 
 class Arrays {
-	/*
-		Service function, helps to insert an array inside another array after a specific key
-		
-		Returns a new array
+	/**
+	 Inserts an array into another array right after the specified key.
+
+	 $array — source array.
+	 $key — key after which the values are inserted.
+	 $value — array of elements to insert.
+
+	 @return array New array; the source array unchanged if the key is not found.
 	*/
 	static function insertAfterKey($array, $key, $value) {
 	    $key_pos = array_search($key, array_keys($array));
@@ -24,6 +28,15 @@ class Arrays {
 	    return $array;
 	}
 
+	/**
+	 Inserts an array into another array right before the specified key.
+
+	 $array — source array.
+	 $key — key before which the values are inserted.
+	 $value — array of elements to insert.
+
+	 @return array New array; the source array unchanged if the key is not found.
+	*/
 	static function insertBeforeKey($array, $key, $value) {
 	    $key_pos = array_search($key, array_keys($array));
 	    if($key_pos !== false){

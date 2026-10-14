@@ -23,6 +23,11 @@ class Language {
 	protected $language_filename;
 	protected $language_directory;
 
+	/**
+	 Loads a language by id and creates an OpenCart language object with the Ka Extensions path and default file loaded.
+
+	 $language_id — language id.
+	*/
 	protected function __construct($language_id) {
 
 		$this->registry = \KaGlobal::getRegistry();
@@ -46,6 +51,13 @@ class Language {
 	}
 
 	
+	/**
+	 Returns a cached language object for the language id, creating it if necessary.
+
+	 $language_id — language id.
+
+	 @return object OpenCart language object.
+	*/
 	static public function getLanguage($language_id) {
 	
 		if (!empty(static::$cache[$language_id])) {
@@ -57,10 +69,12 @@ class Language {
 	}
 	
 	
-	/*
-		code - example: "en-gb"
-		
-		This function is supposed to fetch the langauge_id from setting variables which are defined in codes.
+	/**
+	 Returns the language id by its code.
+
+	 $code — language code, e.g. "en-gb".
+
+	 @return int|false Language id or false if not found.
 	*/
 	static public function getLanguageIdByCode($code) {
 	
