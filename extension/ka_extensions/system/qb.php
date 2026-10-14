@@ -22,10 +22,21 @@ class QB {
 	
 	protected $db = null;
 
+	/**
+	 Creates the query builder using the database object from the registry.
+	*/
 	public function __construct() {
 		$this->db = KaGlobal::getRegistry()->get('db');
 	}
 	
+	/**
+	 Adds a table to the FROM clause.
+
+	 $from — table name without DB_PREFIX.
+	 $from_key — table alias.
+
+	 @return QB This object.
+	*/
 	public function from($from, $from_key = '') {
 		if (!empty($from_key)) {
 			$this->from[$from_key] = $from;
@@ -37,6 +48,15 @@ class QB {
 	}
 
 	
+	/**
+	 Adds an expression to the SELECT clause and optionally a table to FROM.
+
+	 $what — field list or expression.
+	 $from — table name without DB_PREFIX.
+	 $from_key — table alias.
+
+	 @return QB This object.
+	*/
 	public function select($what, $from = '', $from_key = '') {
 		
 		$this->select[] = $what;
@@ -49,6 +69,15 @@ class QB {
 	}
 	
 	
+	/**
+	 Adds an INNER JOIN.
+
+	 $from — table name without DB_PREFIX.
+	 $from_key — table alias.
+	 $condition — ON condition.
+
+	 @return QB This object.
+	*/
 	public function innerJoin($from, $from_key = '', $condition = '') {
 		
 		$arr = array(
@@ -65,6 +94,15 @@ class QB {
 		return $this;
 	}
 
+	/**
+	 Adds a join meant as LEFT JOIN. Note: getSql() currently outputs it as INNER JOIN.
+
+	 $from — table name without DB_PREFIX.
+	 $from_key — table alias.
+	 $condition — ON condition.
+
+	 @return QB This object.
+	*/
 	public function leftJoin($from, $from_key = '', $condition = '') {
 		
 		$arr = array(
@@ -81,8 +119,13 @@ class QB {
 		return $this;
 	}
 	
-	/*
-		$where - string or array. The array means all condtions inside the array have OR.		
+	/**
+	 Adds a WHERE condition. Conditions are joined with AND, the elements of an array condition with OR.
+
+	 $where — condition string, array of conditions, or a field name when $value is given.
+	 $value — value compared with the field; escaped.
+
+	 @return QB This object.
 	*/
 	public function where($where, $value = null) {
 		if (!is_null($value)) {
@@ -93,6 +136,14 @@ class QB {
 		return $this;
 	}	
 	
+	/**
+	 Sets the LIMIT clause.
+
+	 $start — offset.
+	 $limit — number of rows.
+
+	 @return QB This object.
+	*/
 	public function limit($start, $limit) {
 		$this->limit = array(
 			'start' => $start,
@@ -102,6 +153,14 @@ class QB {
 		return $this;
 	}
 	
+	/**
+	 Adds an ORDER BY expression.
+
+	 $order — order expression.
+	 $after — insert after this expression instead of appending.
+
+	 @return QB This object.
+	*/
 	public function orderBy($order, $after = '') {
 	
 		if (empty($after)) {
@@ -113,6 +172,14 @@ class QB {
 		return $this;
 	}
 
+	/**
+	 Adds a GROUP BY expression.
+
+	 $groupBy — group expression.
+	 $after — insert after this expression instead of appending.
+
+	 @return QB This object.
+	*/
 	public function groupBy($groupBy, $after = '') {
 	
 		if (empty($after)) {
@@ -124,6 +191,11 @@ class QB {
 		return $this;
 	}
 	
+	/**
+	 Builds the SQL query from the collected parts.
+
+	 @return string SQL query.
+	*/
 	public function getSql() {
 
 		$sql = '';
@@ -215,8 +287,10 @@ class QB {
 	}
 	
 	
-	/*
-		Builds and runs the query from the QB data
+	/**
+	 Builds and runs the query.
+
+	 @return mixed Result of the database query.
 	*/
 	public function query() {
 		return $this->db->query($this->getSql());

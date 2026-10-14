@@ -10,6 +10,12 @@ namespace Opencart\Extension\KaExtensions\System;
 
 trait TraitSession {
 
+	/**
+	 Stores a value in the session area of the current class.
+
+	 $key — value key.
+	 $value — value.
+	*/
 	protected function setSession($key, $value) {
 
 		$class = get_class($this);
@@ -22,6 +28,13 @@ trait TraitSession {
 	}
 	
 	
+	/**
+	 Returns a reference to a value in the session area of the current class; null is created if missing.
+
+	 $key — value key.
+
+	 @return mixed Reference to the value.
+	*/
 	protected function &getSession($key) {
 		$class = get_class($this);
 		

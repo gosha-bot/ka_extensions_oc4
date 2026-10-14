@@ -13,6 +13,11 @@ use \Twig\TwigFunction;
 
 class TwigExtension extends \Twig\Extension\AbstractExtension
 {
+	/**
+	 Returns Twig functions: dir, t, html_entity_decode, get_language_image, has_t, linka.
+
+	 @return array TwigFunction objects.
+	*/
     public function getFunctions()
     {
         return array(
@@ -41,6 +46,11 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
         );
     }
     
+	/**
+	 Returns the extension name.
+
+	 @return string Extension name.
+	*/
     public function getName()
     {
         return 'Ka Extensions';

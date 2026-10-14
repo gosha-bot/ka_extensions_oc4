@@ -12,6 +12,13 @@ class Tables {
 
 	protected static $tables = array();
 	
+	/**
+	 Returns a cached table object. It first tries an area-specific model via kamodel(), otherwise creates the class by name.
+
+	 $tbl — table model path or class name with '/' separators.
+
+	 @return object Table object. Throws an exception if the class does not exist.
+	*/
 	public static function getTable($tbl) {
 	
 		if (!empty(static::$tables[$tbl])) {

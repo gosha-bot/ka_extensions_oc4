@@ -12,10 +12,22 @@ class Db {
 
 	protected $db = null;
 	
+	/**
+	 Creates the wrapper around the OpenCart database object.
+
+	 $db — OpenCart database object.
+	*/
 	public function __construct($db) {
 		$this->db = $db;
 	}
 		
+	/**
+	 Runs an SQL query.
+
+	 $sql — SQL query.
+
+	 @return array|object Array of result rows, or the original result object when there are no rows.
+	*/
  	public function query($sql) {
  		$res = $this->db->query($sql);
 
@@ -27,22 +39,44 @@ class Db {
  	}
 
  	
- 	/*
- 	*/
+	/**
+	 Inserts a record or updates it when a duplicate key exists (INSERT ... ON DUPLICATE KEY UPDATE).
+
+	 $table — table name without DB_PREFIX.
+	 $data — field => value pairs.
+
+	 @return int|false Last insert id or false on failure.
+	*/
  	public function insertOrUpdate($table, $data) {
  	
  		return $this->insert($table, $data, false, true);
  	}
 
  	
- 	/*
- 		Deprecated function, use insert instead.
- 	*/
+	/**
+	 Deprecated, use insert() instead.
+
+	 $tbl — table name without DB_PREFIX.
+	 $arr — field => value pairs.
+	 $is_replace — use REPLACE instead of INSERT.
+
+	 @return int|false Last insert id or false on failure.
+	*/
 	public function queryInsert($tbl, $arr, $is_replace = false) { 	
 		return $this->insert($tbl, $arr, $is_replace);
 	}
 	
  	
+	/**
+	 Builds and runs an INSERT (or REPLACE) query from an array. Values are escaped, null becomes NULL, numeric keys are added as raw SQL expressions.
+
+	 $tbl — table name without DB_PREFIX.
+	 $arr — field => value pairs.
+	 $is_replace — use REPLACE instead of INSERT.
+	 $update_on_duplicate — add ON DUPLICATE KEY UPDATE with the same values.
+
+	 @return int|false Last insert id or false on failure.
+	*/
 	public function insert($tbl, $arr, $is_replace = false, $update_on_duplicate = false) {
 
 	    if (empty($tbl) || empty($arr) || !is_array($arr)) {
@@ -85,13 +119,26 @@ class Db {
 		return $this->db->getLastId();
 	}
 
-	/*
-		Deprecated. use update() instead.
+	/**
+	 Deprecated, use update() instead.
+
+	 $tbl — table name without DB_PREFIX.
+	 $arr — field => value pairs.
+	 $where — WHERE condition without the WHERE keyword.
 	*/
 	public function queryUpdate($tbl, $arr, $where = '') {
 		$this->update($tbl, $arr, $where);
 	}
 	
+	/**
+	 Builds and runs an UPDATE query from an array. Values are escaped, null becomes NULL, numeric keys are added as raw SQL expressions.
+
+	 $tbl — table name without DB_PREFIX.
+	 $arr — field => value pairs.
+	 $where — WHERE condition without the WHERE keyword; empty updates all rows.
+
+	 @return mixed Result of the database query.
+	*/
 	public function update($tbl, $arr, $where = '') {
 	    if (empty($tbl) || empty($arr) || !is_array($arr)) {
     	    throw new \Exception(__METHOD__ . ": wrong parameters");
@@ -124,14 +171,25 @@ class Db {
     	return $this->db->query($query);
 	}
 
-	/*
-		Deprecated function
+	/**
+	 Deprecated. Runs a query and returns the first row.
+
+	 $qry — SQL query.
+
+	 @return array First row of the result.
 	*/
 	public function queryFirst($qry) {
 		$res = $this->db->query($qry);
 		return $res->row;
 	}
 
+	/**
+	 Runs a query, replacing DB_PREFIX with the MijoShop prefix when MijoShop is present.
+
+	 $query — SQL query.
+
+	 @return mixed Result of the database query.
+	*/
 	public function safeQuery($query) {
 	
 		if (in_array('MijoShop', get_declared_classes())) {
@@ -145,6 +203,14 @@ class Db {
 		return $result;
 	}
 	
+	/**
+	 Runs a query and returns rows indexed by the value of the given column.
+
+	 $qry_string — SQL query.
+	 $key — column whose value is used as the array key.
+
+	 @return array|false Rows indexed by the key or false if there are no rows. Throws an exception if the column is missing.
+	*/
 	public function queryHash($qry_string, $key) {
 	
 		$qry = $this->db->query($qry_string);
@@ -167,11 +233,13 @@ class Db {
 	}
 	
 	
-	/*
-		it works with varchar(...) type only right now
-		
-		RETURNS:
-			array where keys are fields, values are field lengths
+	/**
+	 Returns the maximum lengths of varchar fields in a table. Only varchar(...) fields are supported, others get 0.
+
+	 $table — full table name.
+	 $fields — list of field names.
+
+	 @return array|false Field => length pairs or false if the table or fields are empty.
 	*/
 	public function getFieldLengths($table, $fields) {
 	
