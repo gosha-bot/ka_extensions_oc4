@@ -10,7 +10,7 @@
 namespace Opencart\Admin\Controller\Extension\KaExtensions\Setting;
 
 use \extension\ka_extensions\KamodManager;
-use \Opencart\Extension\KaExtensions\System\Directory;
+use \extension\ka_extensions\Directory;
 
 class Extension extends \Opencart\Admin\Model\Setting\Extension {
 

@@ -33,7 +33,7 @@ $this->model_extension_ka_extensions_common->checkFrameworkPatch();
   <file path="admin\controller\user\user_permission.php">
     <operation>
       <search>
-        <![CDATA[$results = glob(DIR_EXTENSION . '*/admin/controller/*/*.php')]]>
+        <![CDATA[glob(DIR_EXTENSION . '*/admin/controller/]]>
       </search>
       <add position="after">
         <![CDATA[//kamod
