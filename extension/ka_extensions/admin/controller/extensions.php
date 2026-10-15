@@ -145,7 +145,7 @@ class Extensions extends \Opencart\Extension\KaExtensions\System\Controller {
 
 		$success = $this->load->controller('extension/' . $this->request->get['extension'] . '/extension|install', []);
 		if ($success) {
-			$this->model_setting_extension->install('ka_extensions', 'ka_extensions', $this->request->get['extension']);
+			$this->model_setting_extension->install('ka_extensions', $this->request->get['extension'], $this->request->get['extension']);
 			$this->addTopMessage($this->language->get('txt_installation_successful'));
 		} else {
 			$this->addTopMessage($this->language->get("txt_installation_failed"), 'E');
