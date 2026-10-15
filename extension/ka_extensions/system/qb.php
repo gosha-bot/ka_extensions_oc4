@@ -95,7 +95,7 @@ class QB {
 	}
 
 	/**
-	 Adds a join meant as LEFT JOIN. Note: getSql() currently outputs it as INNER JOIN.
+	 Adds a LEFT JOIN.
 
 	 $from — table name without DB_PREFIX.
 	 $from_key — table alias.
@@ -234,7 +234,7 @@ class QB {
 		//
 		if (!empty($this->leftJoin)) {
 			foreach ($this->leftJoin as $k => $v) {
-				$sql .= " INNER JOIN " . DB_PREFIX . $v['table'] . ' ' . $k;
+				$sql .= " LEFT JOIN " . DB_PREFIX . $v['table'] . ' ' . $k;
 				
 				if (!empty($v['on'])) {
 					$sql .= " ON " . $v['on'] . " ";
