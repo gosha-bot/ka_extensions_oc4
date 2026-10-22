@@ -228,6 +228,9 @@ class KamodManager {
 CFGTXT;
 		
 			file_put_contents(DIR_CONFIG . 'kamod.php', $contents);
+			if (function_exists('opcache_invalidate')) {
+				opcache_invalidate(DIR_CONFIG . 'kamod.php', true);
+			}
 		}
 	}
 	

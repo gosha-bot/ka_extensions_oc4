@@ -302,12 +302,16 @@ PATCH;
 
 		if (!file_exists($backup)) {
 			if (!copy($filename, $backup)) {
-				throw new RuntimeException('Failed to create backup: ' . $backup);
+				throw new \RuntimeException('Failed to create backup: ' . $backup);
 			}
 		}
 
 		if (file_put_contents($filename, $newContent, LOCK_EX) === false) {
-			throw new RuntimeException('Failed to patch framework file: ' . $filename);
+			throw new \RuntimeException('Failed to patch framework file: ' . $filename);
+		}
+
+		if (function_exists('opcache_invalidate')) {
+			opcache_invalidate($filename, true);
 		}
 	}	
 }

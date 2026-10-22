@@ -458,6 +458,9 @@ CMTXT;
 					
 				Directory::checkDirectory($this->ka_cache_dir . $target_file);
 				file_put_contents($this->ka_cache_dir . $target_file, $contents);
+				if (function_exists('opcache_invalidate')) {
+					opcache_invalidate($this->ka_cache_dir . $target_file, true);
+				}
 				
 				continue;
 			}
@@ -486,6 +489,9 @@ CMTXT;
 					. $contents;
 				
 				file_put_contents($main_info['file'], $contents);
+				if (function_exists('opcache_invalidate')) {
+					opcache_invalidate($main_info['file'], true);
+				}
 			}
 
 			// copy children files
@@ -525,6 +531,9 @@ CMTXT;
 			}
 
 			file_put_contents($this->ka_cache_dir . $file, implode("\n", $contents));
+			if (function_exists('opcache_invalidate')) {
+				opcache_invalidate($this->ka_cache_dir . $file, true);
+			}
 		}
 	}
 	
@@ -741,6 +750,9 @@ CMTXT;
 		Directory::checkDirectory($target_file);
 		
 		file_put_contents($target_file, $file_lines);
+		if (function_exists('opcache_invalidate')) {
+			opcache_invalidate($target_file, true);
+		}
 		
 		$file_info = array(
 			'org_class'      => $main_class,

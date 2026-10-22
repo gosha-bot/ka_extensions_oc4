@@ -58,7 +58,10 @@ class KaPatch {
 
 		$contents = $this->applyXmlPatches($contents, $patches);
 		
-		file_put_contents($target_file, $contents);		
+		file_put_contents($target_file, $contents);
+		if (function_exists('opcache_invalidate')) {
+			opcache_invalidate($target_file, true);
+		}
 	}
 	
 	

@@ -85,6 +85,7 @@ CNTTXT;
 		
 		if (empty($path) || empty($path['path']) || !file_exists(DIR_EXTENSION . $path['path'])) {
 			parent::deletePath($extension_path_id);
+			return;
 		}
 		
 		// here we have to delete the path ourselves otherwise the extension will not be installed properly
@@ -92,7 +93,7 @@ CNTTXT;
 		//
 		try {
 			Directory::deleteDirectory(DIR_EXTENSION . $path['path']);
-		} catch (\Exception $e) {
+		} catch (\Throwable $e) {
 			$this->log->write(__METHOD__ . ": " . $e->getMessage());
 			return;
 		}
