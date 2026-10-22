@@ -12,8 +12,6 @@ namespace Opencart\Admin\Controller\Extension\KaExtensions\Setting;
 use \extension\ka_extensions\KamodManager;
 use \extension\ka_extensions\Directory;
 
-include_once(DIR_EXTENSION . 'ka_extensions/engine/directory.php');
-
 class Extension extends \Opencart\Admin\Model\Setting\Extension {
 
 	/*
