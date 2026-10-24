@@ -30,12 +30,9 @@ Patch file::
 
 PHP class files (controllers, models, libraries) and twig templates can be patched, including files of
 other extensions (``kamod/extension/<module>/...``). A PHP file can have patches and child classes
-at the same time: the patches are applied to the original class first.
-
-.. warning::
-
-    In Ka Extensions 5.1.1.0 patches of a twig template are not applied when any module also extends
-    this template with a child template. Do not combine both ways for one template.
+at the same time: the patches are applied to the original class first. The same is true for twig
+templates: the patches are applied to the original template, child templates of modules extend the
+patched copy.
 
 KaPatch Format
 --------------

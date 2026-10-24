@@ -41,8 +41,24 @@ Constructor parameters:
 
 Data available in templates: ``store_name``, ``sender``, ``store_url`` (the customer login page of
 the store), ``subject``, ``logo`` (URL of the store logo) and everything added to ``$mail->data``.
-Pass the texts of your module in ``$mail->data``: the language object of the email has only the
-``default`` language file and the common texts of Ka Extensions.
+The email has its own language object, ``$mail->language``, in the language of the email. It contains the
+``default`` language file. Load the language files of your module into it, then their texts are
+available in the templates with ``t()`` and in your code with ``$mail->language->get()``:
+
+.. code-block:: php
+
+    $mail = new Mail($language_id);
+    $mail->language->load('extension/my_module/mail/order_shipped');
+
+    $mail->send('', $email, 'text_subject', 'extension/my_module/mail/order_shipped');
+
+.. code-block:: twig
+
+    <p>{{ t('text_greeting') }}</p>
+
+The file is taken from the language directory of the current area, for example
+``extension/my_module/catalog/language/de-de/mail/order_shipped.php`` in the storefront. When it does
+not exist for the language, the ``en-gb`` file is used.
 
 Common Header and Footer
 ------------------------
