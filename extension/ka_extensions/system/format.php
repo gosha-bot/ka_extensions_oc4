@@ -54,7 +54,7 @@ class Format {
 		
 		// later we add possible paths from extensions
 		// it might be sufficient here to add just the main path but we decided to implement multi-load just as
-		// an example for futher references
+		// an example for further references
 		//
 		if (KaGlobal::isAdminArea()) {
 			$this->language->addPath('extension/ka_extensions', DIR_OPENCART . 'extension/ka_extensions/admin/language/');

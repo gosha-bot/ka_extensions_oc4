@@ -6,7 +6,7 @@
 	$Version$ ($Revision$)
 */
 
-namespace Opencart\System\Library\extension\ka_extensions\exception;
+namespace Opencart\Extension\KaExtensions\System\Exception;
 
 class MailException extends \Exception {
 

@@ -262,13 +262,13 @@ class QB {
 		// group by
 		//
 		if (!empty($this->groupBy)) {
-			$sql .= " GROUP BY " . implode($this->groupBy);
+			$sql .= " GROUP BY " . implode(", ", $this->groupBy);
 		}
 		
 		// order by
 		//
 		if (!empty($this->orderBy)) {
-			$sql .= " ORDER BY " . implode($this->orderBy);
+			$sql .= " ORDER BY " . implode(", ", $this->orderBy);
 		}
 		
 		// limit

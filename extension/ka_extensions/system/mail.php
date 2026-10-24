@@ -8,7 +8,7 @@
 	
 namespace Opencart\Extension\KaExtensions\System;
 
-use exception\MailException;
+use Opencart\Extension\KaExtensions\System\Exception\MailException;
 
 class Mail {
 
@@ -20,7 +20,7 @@ class Mail {
 	protected $load;
 	protected $registry;
 
-	protected $language;
+	public $language;
 	
 	public $mail;
 	public $sender;
@@ -56,6 +56,7 @@ class Mail {
 		
 		// init standard Opencart mail object
 		//
+		$mail_engine = $this->config->get('config_mail_engine');
 		$mail_option = [
 				'parameter'     => $this->config->get('config_mail_parameter'),
 				'smtp_hostname' => $this->config->get('config_mail_smtp_hostname'),
@@ -71,6 +72,10 @@ class Mail {
 			$this->mail = new \Opencart\System\Library\Mail($mail_engine, $mail_option);
 		}	
 		
+		// templates and language files for sendContent() are in the catalog directory of Ka Extensions,
+		// they are used in the admin area too
+		$this->registry->get('template')->addPath('extension/ka_extensions/common/mail', DIR_EXTENSION . 'ka_extensions/catalog/view/template/common/mail/');
+
 		// get store information
 		//
 		$store_info = Store::getStoreInfo($store_id);
@@ -109,7 +114,8 @@ class Mail {
 		}
 
 		// HTML Mail
-		$this->data['subject'] = $this->language->get($subject);
+		$subject = $this->language->get($subject);
+		$this->data['subject'] = $subject;
 		$logo = $this->store_config->get('config_logo');
 		if (is_file(DIR_IMAGE . $logo)) {
 			$this->images['logo'] = $logo;
@@ -132,7 +138,7 @@ class Mail {
 					$this->data['header']  = $this->loadViewForLanguage('extension/ka_extensions/common/mail/header_txt', $this->data);
 					$this->data['footer']  = $this->loadViewForLanguage('extension/ka_extensions/common/mail/footer_txt', $this->data);
 					$this->data['content'] = $text;
-					$text = $this->load->view('extension/ka_extensions/common/mail/content_txt', $this->data);
+					$text = $this->loadViewForLanguage('extension/ka_extensions/common/mail/content_txt', $this->data);
 				} catch (MailException $e) {
 					$this->log->write("WARNING: skipped txt content email for: $tpl. Reason: " . $e->getMessage());
 				}
@@ -245,7 +251,7 @@ class Mail {
 	
 		$tpl = $template . '_' . $this->language->get('code');
 
-		// supress notices and warnings when the template is not found
+		// suppress notices and warnings when the template is not found
 		// $old_er = error_reporting();
 		// error_reporting(E_ERROR);
 		
@@ -256,9 +262,18 @@ class Mail {
 		$org_language = $this->registry->get('language');
 		$this->registry->set('language', $this->language);
 		
-		$result = $this->load->view($tpl, $data);
+		// a missing template may throw an exception or return an empty string
+		try {
+			$result = $this->load->view($tpl, $data);
+		} catch (\Exception $e) {
+			$result = '';
+		}
 		if (empty($result)) {
-			$result = $this->load->view($template, $data);
+			try {
+				$result = $this->load->view($template, $data);
+			} catch (\Exception $e) {
+				$result = '';
+			}
 		}
 		
 		$this->registry->set('language', $org_language);		

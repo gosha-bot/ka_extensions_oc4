@@ -53,7 +53,7 @@ abstract class ControllerInstaller extends Controller {
 		$this->ini = $this->model_extension_ka_extensions_common->loadManifest($this->ext_code);
 		
 		if (empty($this->ini)) {
-			$this->log->write($$error = "Manifest (install.json) was not found for " . get_class($this));
+			$this->log->write($error = "Manifest (install.json) was not found for " . get_class($this));
 			throw new \Exception($error);
 		}
 

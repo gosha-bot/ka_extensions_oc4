@@ -29,7 +29,7 @@ $_['txt_uninstallation_failed']     = 'Extension is not uninstalled.';
 $_['The license key was validated successfully.'] = "The license key was validated successfully. The license key is linked to your website now.";
 
 $_['text_extension_registration'] = 'Extension Registration';
-$_['text_reg_instructions']       = '<p>Registration of your extension confirms that the current installation is ligitimate.
+$_['text_reg_instructions']       = '<p>Registration of your extension confirms that the current installation is legitimate.
 				Illegal installations may stop working unexpectedly.
 				</p>
 				The license key is sent to a buyer\'s email address after the order has been processed. If you have not received the license key within an hour, please follow instructions in				

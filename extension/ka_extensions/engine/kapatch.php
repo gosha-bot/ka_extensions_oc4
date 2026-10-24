@@ -100,12 +100,12 @@ class KaPatch {
 		
 		if (empty($version)) {
 			$this->log("kamod version is not specified in the file" . $xml_file . ". The patch is skipped", 'E');
-			return;
+			return $contents;
 		}
 		
 		if (version_compare($version, KamodBuilder::KAMOD_VERSION, ">")) {
 			$this->log("The patch '$xml_file' requires version '" . $version . "'. The installed kamod version '" . KamodBuilder::KAMOD_VERSION . "'. The patch is skipped", 'E');
-			return;
+			return $contents;
 		}
 
 		$major_version       = explode(".", $version);
@@ -113,14 +113,14 @@ class KaPatch {
 		
 		if ($major_version[0] != $major_kamod_version[0]) {
 			$this->log("The patch '$xml_file' requires version '" . $version . "'. The installed kamod version '" . KamodBuilder::KAMOD_VERSION . "'. The patch is skipped", 'E');
-			return;
+			return $contents;
 		}
 		
 		// apply operations from the patch
 		//
 		foreach ($xml->changes->operation as $op) {
 			if ($op['type'] == 'replace') {
-				$contents = $this->applyOperationReplace($contents, $op->search, (string)$op->text[0]);
+				$contents = $this->applyOperationReplace($contents, $op, (string)$op->text[0], $xml_file);
 			}
 		}
 		
@@ -128,15 +128,28 @@ class KaPatch {
 	}
 	
 
-	protected function applyOperationReplace($contents, $search, $text) {
+	protected function applyOperationReplace($contents, $op, $text, $xml_file) {
+		
+		$search = $op->search;
+		$count  = 0;
 		
 		if (!empty($search['regexp'])) {
 			// Ungreedy, multiline, the dot includes new lines
-			$result = preg_replace("/" . trim((string)$search[0]) . "/Ums", $text, $contents);
+			$result = preg_replace("/" . trim((string)$search[0]) . "/Ums", $text, $contents, -1, $count);
 		} else {
-			$result = str_replace((string)$search[0], $text, $contents);
+			$result = str_replace((string)$search[0], $text, $contents, $count);
+		}
+		
+		// an operation with skip="true" may not find its search string
+		if (empty($count) && !$this->isTrue($op['skip'])) {
+			$this->log('Kapatch did not find the search string "' . (string)$search[0] . '" from the file ' . $xml_file, 'E');
 		}
 		
 		return $result;
+	}
+	
+	
+	protected function isTrue($value) {
+		return in_array(strtolower(trim((string)$value)), ['1', 'true', 'yes']);
 	}
 }
