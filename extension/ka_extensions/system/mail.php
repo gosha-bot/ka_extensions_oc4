@@ -20,7 +20,7 @@ class Mail {
 	protected $load;
 	protected $registry;
 
-	protected $language;
+	public $language;
 	
 	public $mail;
 	public $sender;
