@@ -8,6 +8,12 @@
 	
 namespace Opencart\Extension\KaExtensions\System;
 
+/**
+	Replaces the standard OpenCart Controller class with extended functionality. Recommended as a base
+	class for all controllers of Ka extensions.
+
+	@package Core
+*/
 abstract class Controller extends \Opencart\System\Engine\Controller {
 
 	use TraitSession, TraitController;

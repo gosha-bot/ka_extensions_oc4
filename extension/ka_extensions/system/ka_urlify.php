@@ -18,6 +18,12 @@ A part of this code was based on:
 
 namespace Opencart\Extension\KaExtensions\System;
 
+/**
+	Transliterates text to ASCII and converts it to URL-friendly strings (SEO keywords). Based on
+	https://github.com/jbroadway/urlify.
+
+	@package Service
+*/
 class KaURLify {
 	const URL_NATIONAL = 'national';
 	const URL_FILE     = 'file';
@@ -202,6 +208,9 @@ class KaURLify {
 	 Adds new characters to the transliteration list.
 
 	 $map — associative array of character => replacement.
+
+	 @throws \LogicException If $map is not an array.
+	 @return void
 	*/
 	public static function add_chars ($map) {
 		if (! is_array ($map)) {

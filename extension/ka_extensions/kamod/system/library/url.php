@@ -4,6 +4,11 @@ namespace Opencart\System\Extension\KaExtensions\Library;
 
 use \Opencart\Extension\KaExtensions\System\KaGlobal;
 
+/**
+	Kamod override of the OpenCart url library. Adds linka().
+
+	@internal
+*/
 class Url extends \Opencart\System\Library\Url {
 
 	public function linka(string $route, $args = null, bool $js = false): string {

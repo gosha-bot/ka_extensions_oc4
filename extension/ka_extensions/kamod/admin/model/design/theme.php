@@ -8,6 +8,11 @@
 
 namespace Opencart\Admin\Controller\Extension\KaExtensions\Design;
 
+/**
+	Kamod override of the admin theme model. Rebuilds the theme cache when themes are added, edited or deleted.
+
+	@internal
+*/
 class Theme extends \Opencart\Admin\Model\Design\Theme {
 
 	public function addTheme(array $data): int {

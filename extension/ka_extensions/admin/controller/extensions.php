@@ -12,6 +12,11 @@ use \Opencart\Extension\KaExtensions\System\KaGlobal;
 use \Opencart\Extension\KaExtensions\System\ControllerInstaller;
 use \extension\ka_extensions\KamodManager;
 
+/**
+	The 'Ka Extensions' admin page: lists Ka extensions and installs, uninstalls and rebuilds them.
+
+	@internal
+*/
 class Extensions extends \Opencart\Extension\KaExtensions\System\Controller {
 
 	protected function onLoad() {

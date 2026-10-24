@@ -9,6 +9,12 @@
 
 namespace Opencart\Extension\KaExtensions\System;
 
+/**
+	Contains several global helper methods: registry access, area and version checks, extension and
+	file helpers.
+
+	@package Service
+*/
 abstract class KaGlobal {
 
 	protected static $admin_dirname;
@@ -186,6 +192,11 @@ abstract class KaGlobal {
 }
 
 
+/**
+	Reserved helper methods for Ka extensions.
+
+	@internal
+*/
 trait КaReserved {
 
 	/**

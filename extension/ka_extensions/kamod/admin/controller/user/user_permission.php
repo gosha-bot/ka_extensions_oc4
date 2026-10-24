@@ -11,6 +11,11 @@
 */
 namespace Opencart\Admin\Controller\Extension\KaExtensions\User;
 
+/**
+	Kamod override of the user group permission page. Hides paths within kamod directories.
+
+	@internal
+*/
 class UserPermission extends \Opencart\Admin\Controller\User\UserPermission {
 
 	use \Opencart\Extension\KaExtensions\System\TraitController;

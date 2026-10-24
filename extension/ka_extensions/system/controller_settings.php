@@ -9,10 +9,22 @@
 */
 namespace Opencart\Extension\KaExtensions\System;
 
+/**
+	A base class for a module settings page. It incapsulates all required fields and methods:
+	shows the settings form, validates and saves settings, sets default values on installation and
+	deletes settings on uninstallation.
+
+	@package Controller
+*/
 abstract class ControllerSettings extends ControllerInstaller {
 
 	use TraitControllerForm;
 
+	/**
+	 Loads language files of the library and the extension and prepares the settings fields.
+
+	 @return void
+	*/
 	protected function onLoad() {	
 
 		$this->load->language('extension/ka_extensions/common');	
@@ -31,8 +43,19 @@ abstract class ControllerSettings extends ControllerInstaller {
 		parent::onLoad();
 	}
 
+	/**
+	 Returns the settings fields definition. Field codes are setting keys, 'default_value' is
+	 saved on installation.
+
+	 @return array
+	*/
 	abstract protected function getFields();
 	
+	/**
+	 Shows the settings page with current setting values.
+
+	 @return void
+	*/
 	public function index() {
 
 		$heading_title = $this->getTitle();
@@ -76,6 +99,11 @@ abstract class ControllerSettings extends ControllerInstaller {
 	}
 	
 	
+	/**
+	 Saves posted settings (AJAX). Outputs a JSON response with 'success' or 'error' keys.
+
+	 @return bool True if the settings were saved.
+	*/
 	public function save() {
 
 		if ($this->request->server['REQUEST_METHOD'] != 'POST') {
@@ -127,6 +155,13 @@ abstract class ControllerSettings extends ControllerInstaller {
 	}
 
 
+	/**
+	 Installs the extension, grants permissions to the settings page and saves default setting values.
+
+	 $params — see ControllerInstaller::install().
+
+	 @return bool True on success.
+	*/
 	public function install($params) {
 
 		if (!parent::install($params)) {
@@ -154,6 +189,14 @@ abstract class ControllerSettings extends ControllerInstaller {
  	}
 
 		
+	/**
+	 Deletes the extension settings and uninstalls the extension.
+
+	 $params — see ControllerInstaller::uninstall().
+
+	 @throws \Exception If $params is null.
+	 @return bool
+	*/
 	public function uninstall($params) {
 	
 		if (is_null($params)) {
@@ -166,6 +209,11 @@ abstract class ControllerSettings extends ControllerInstaller {
 	}
 	
 	
+	/**
+	 Validates posted setting values.
+
+	 @return bool True if the values are valid.
+	*/
 	protected function validate() {
 	
 		if (!$this->validateFields($this->fields, $this->request->post)) {

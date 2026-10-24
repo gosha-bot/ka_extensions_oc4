@@ -10,6 +10,12 @@
 	
 */
 namespace Opencart\Catalog\Model\Extension\KaExtensions\Design;
+/**
+	Kamod override of the catalog theme model. Customized templates are stored on a disk because
+	they are patched by kamod.
+
+	@internal
+*/
 class Theme extends \Opencart\Catalog\Model\Design\Theme {
 	public function getTheme(string $route): array {
 		return array();

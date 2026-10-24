@@ -9,6 +9,11 @@
 
 */
 
+/**
+	A stub for the vqmod loader.
+
+	@internal
+*/
 class VQModKa {
 	public static function modCheck($file) {
 		return $file;

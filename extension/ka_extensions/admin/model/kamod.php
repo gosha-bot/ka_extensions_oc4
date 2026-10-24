@@ -8,6 +8,11 @@
 
 namespace Opencart\Admin\Model\Extension\KaExtensions;
 
+/**
+	Admin model for the kamod cache: rebuilds the theme cache and counts kamod errors.
+
+	@internal
+*/
 class Kamod extends \Opencart\Extension\KaExtensions\System\Model {
 
 	protected $kamod_manager;

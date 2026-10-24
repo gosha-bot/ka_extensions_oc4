@@ -8,6 +8,11 @@
 
 namespace Opencart\System\Extension\KaExtensions\Engine;
 
+/**
+	Kamod override of the OpenCart loader. Adds kamodel() and render control.
+
+	@internal
+*/
 class Loader extends \Opencart\System\Engine\Loader {
 
 	protected $ka_render_depth = array(0);

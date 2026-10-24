@@ -10,6 +10,12 @@ namespace Opencart\Extension\KaExtensions\System;
 
 use Opencart\Extension\KaExtensions\System\Exception\MailException;
 
+/**
+	Simplifies email submission. Builds emails from templates and language files and sends them with
+	the store mail settings.
+
+	@package Service
+*/
 class Mail {
 
 	protected $config;
@@ -243,7 +249,8 @@ class Mail {
 	 $template — template name without extension.
 	 $data — template variables.
 
-	 @return string Rendered content. Throws MailException if the result is empty.
+	 @throws MailException If the rendered content is empty.
+	 @return string Rendered content.
 	*/
 	public function loadViewForLanguage($template, $data) {
 

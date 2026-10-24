@@ -8,7 +8,11 @@
 	
 namespace Opencart\Extension\KaExtensions\System;
 
-// Query Builder
+/**
+	Query Builder. Builds SQL SELECT queries from parts.
+
+	@package DB
+*/
 class QB {
 
 	var $select    = array();

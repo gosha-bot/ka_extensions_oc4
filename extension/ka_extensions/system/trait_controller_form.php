@@ -8,6 +8,11 @@
 	
 namespace Opencart\Extension\KaExtensions\System;
 
+/**
+	Helpful functions for forms: field values, errors and validation.
+
+	@package Controller
+*/
 trait TraitControllerForm {
 
 	protected $fields;

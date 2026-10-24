@@ -12,6 +12,11 @@ namespace Opencart\Admin\Controller\Extension\KaExtensions\Common;
 
 use Opencart\Extension\KaExtensions\System\Arrays;
 
+/**
+	Kamod override of the admin left column controller. Adds the Ka Extensions menu.
+
+	@internal
+*/
 class ControllerColumnLeft extends \Opencart\Admin\Controller\Common\ColumnLeft {
 
 	use \Opencart\Extension\KaExtensions\System\TraitController;

@@ -8,6 +8,11 @@
 	
 namespace Opencart\Extension\KaExtensions\System;
 
+/**
+	Extended pagination class. It renders the standard pagination and the results text.
+
+	@package Controller
+*/
 class Pagination {
 
 	public $total = 0;
@@ -19,6 +24,10 @@ class Pagination {
 	protected $config;
 	protected $language;
 
+	/**
+	 $params — array with keys: total — total number of records; page — current page;
+	 limit — records per page (the admin pagination setting by default); url — page url with '{page}'.
+	*/
 	public function __construct($params) {
 		$this->registry = KaGlobal::getRegistry();
 		$this->load     = $this->registry->get('load');
@@ -42,6 +51,11 @@ class Pagination {
 		}
 	}
 
+	/**
+	 Renders the pagination with the 'common/pagination' controller.
+
+	 @return string
+	*/
 	public function getPagination() {
 		$pagination = $this->load->controller('common/pagination', [
 			'total' => $this->total,
@@ -53,6 +67,13 @@ class Pagination {
 		return $pagination;
 	}
 	
+	/**
+	 Returns a text like 'Showing 1 to 20 of 100 (5 Pages)'.
+
+	 $text — sprintf format; the 'text_pagination' language string by default.
+
+	 @return string
+	*/
 	public function getResults($text = '') {
 	
 		if (empty($text)) {

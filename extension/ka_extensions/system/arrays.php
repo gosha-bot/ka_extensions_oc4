@@ -8,6 +8,11 @@
 
 namespace Opencart\Extension\KaExtensions\System;
 
+/**
+	Helpful functions for managing arrays.
+
+	@package Service
+*/
 class Arrays {
 	/**
 	 Inserts an array into another array right after the specified key.
