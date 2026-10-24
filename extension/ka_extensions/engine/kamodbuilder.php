@@ -568,9 +568,9 @@ CMTXT;
 
 		$index = count($fdata['children']);
 
-		// copy the main file
+		// copy the main file (with patches if available)
 		//
-		$main_info = $this->copyTwigFile($file, $index);
+		$main_info = $this->copyTwigFile($file, $index, [], !empty($fdata['patches']) ? $fdata['patches'] : []);
 		
 		// copy children files
 		//
@@ -909,9 +909,10 @@ CMTXT;
 		Creates a modified copy of the file in the modification directory
 		
 		$module_file - a relative path to the source file
+		$patches     - array of XML patch files to apply (only applied to the main file)
 		
 	*/
-	protected function copyTwigFile($module_file, $index = 0, $parent_info = []) {
+	protected function copyTwigFile($module_file, $index = 0, $parent_info = [], $patches = []) {
 
 		$mod_module_file = $this->getActualTwigFile($module_file);
 		
@@ -935,6 +936,15 @@ CMTXT;
 		//
 		if (file_exists($mod_module_file)) {
 			$file_contents = file_get_contents(\VQModKa::modCheck($mod_module_file));
+
+			// apply XML patches if this is the main file and patches are available
+			//
+			if (empty($parent_info) && !empty($patches)) {
+				$file_contents = $this->kapatch->applyXmlPatches($file_contents, $patches);
+
+				$applied_patches = implode("\n\t", $patches);
+				$file_contents = str_replace(['%file_list%', '%original_file%'], [$applied_patches, $module_file], $this->mod_comment) . $file_contents;
+			}
 		} else {
 			$file_contents = <<<CNT
 {# 
