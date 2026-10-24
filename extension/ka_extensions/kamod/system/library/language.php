@@ -10,6 +10,11 @@
 */
 namespace Opencart\System\Extension\KaExtensions\Library;
 
+/**
+	Kamod override of the OpenCart language library. Adds has() and language files of all extensions.
+
+	@internal
+*/
 class Language extends Opencart\System\Library\Language {
 
 	/*

@@ -8,30 +8,28 @@
 	
 namespace Opencart\Extension\KaExtensions\System;
 
-/*
-	This is a service class for storing url parameters and building URLs
+/**
+	This is a service class for storing url parameters and building URLs.
+
+	Example:
 
 	// define available page parameters
 	//
-		$params = array(
-			'path'    => '',
-			'letters' => '', // letter
+	$params = array(
+		'path'    => '',
+		'letters' => '', // letter
 		'sort'    => 'name',
-			'order'   => 'ASC', 
-			'page'    => '1',
-		);
+		'order'   => 'ASC',
+		'page'    => '1',
+	);
 	$url_params = new UrlParams($this->request, $params);
 	$params = $url_params->getParams();
-	if (strlen($params['letters']) > 1) {
-  		$params['subletter'] = substr($params['letters'], 1, 1);
-  	}
+	...
+	'href' => $this->url->link('product/category', $url_params->getUrl(['path' => $path]))
+	...
+	$pagination->url = $this->url->link('product/category', $url_params->getUrl(['page' => '{page}']));
 
-	
-  	...
-  	'href' => $this->url->link('product/category', $url_params->getUrl(['path' => $path]))
-  	...
-  	$pagination->url = $this->url->link('product/category', $url_params->getUrl(['page' => '{page}']));
-	
+	@package Service
 */
 class UrlParams {
 	protected $request;

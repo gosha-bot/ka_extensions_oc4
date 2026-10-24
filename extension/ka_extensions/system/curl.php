@@ -8,6 +8,14 @@
 	
 namespace Opencart\Extension\KaExtensions\System;
 
+/**
+	Simplifies http requests. Optional.
+
+	Originally it was created for fetching images from external services but later we extended it
+	with features to make api calls.
+
+	@package Service
+*/
 class Curl {
 
 	protected $lastError = '';
@@ -15,24 +23,26 @@ class Curl {
 	
 	protected $last_file_info = array();
 	
+	/**
+	 Returns the last error.
+
+	 @return string
+	*/
 	public function getLastError() {
 		return $this->lastError;
 	}
 	
 
-	/*
-		RETURNS:
-			false - on error
-			array - on success. It looks like:
-				array(
-					'status'
-						'http_version'  =>
-						'status_code'   =>
-						'reason_phrase' =>
-					'headers'
-						'<hdr1>' => value
-						'<hdr2>' => value
-				)
+	/**
+	 Parses an http header block.
+
+	 $header — header block of the response.
+
+	 @return array|false False on error. On success an array like:
+	 array(
+	 	'status' => array('http_version' => ..., 'status_code' => ..., 'reason_phrase' => ...),
+	 	'headers' => array('<hdr1>' => value, '<hdr2>' => value)
+	 )
 	*/
 	protected function parseHttpHeader($header) {
 	
@@ -66,12 +76,20 @@ class Curl {
 		return $result;					
 	}
 
-	/*
-		$data - can be a plain text or array of fields
-		options - array of possible values.
-			user-agent   - text for user-agent value
-			extr_headers - can add extra headers to the request
-	*/		
+	/**
+	 Sends an http request and follows up to 5 redirects. The request is sent with POST when $data
+	 is not empty.
+
+	 $url — request url.
+	 $data — plain text or array of fields.
+	 $options — array of possible values:
+	 	timeout — request timeout in seconds (8 by default);
+	 	user-agent — text for user-agent value;
+	 	extra_headers — array of extra headers (name => value);
+	 	webauth_username, webauth_password — credentials for http authorization.
+
+	 @return string|null|false Response body; null or false on error (see getLastError()).
+	*/
 	public function request($url, $data = array(), $options = array()) {
 
 		if (empty($options['timeout'])) {
@@ -209,9 +227,16 @@ class Curl {
 	
 	
 	
-	//
-	// http://www.w3.org/Protocols/rfc2616/rfc2616-sec6.html
-	//
+	/**
+	 Downloads a file by url and follows up to 5 redirects. Partial download is supported, see
+	 http://www.w3.org/Protocols/rfc2616/rfc2616-sec6.html. File name and content type of the
+	 last file are available through getLastFileInfo().
+
+	 $url — file url.
+	 $from — byte offset to start downloading from.
+
+	 @return string|null File contents; null on error (see getLastError()).
+	*/
 	public function getFileContentsByUrl($url, $from = 0) {
 
 		$message = null;
@@ -438,13 +463,22 @@ A sample header received from nginx server which forced the partial download
 	}
 
 	
+	/**
+	 Returns information about the last downloaded file ('filename', 'content-type').
+
+	 @return array
+	*/
 	public function getLastFileInfo() {
 		return $this->last_file_info;
 	}
 	
 	
-	/* 
-		The function encodes an image URL to a url-compliant string
+	/**
+	 Encodes an image URL to a url-compliant string.
+
+	 $url — url to encode.
+
+	 @return string
 	*/
 	function encodeURL($url) {
     	$encodedUrl = preg_replace_callback('/[^\*$:\/@?&=#]+/usD', function ($matches) {
@@ -462,10 +496,14 @@ A sample header received from nginx server which forced the partial download
     	return $encodedUrl;
 	}
 	
-/*	
-	Example of content dispostion string:
-	attachment;filename="BK914.jpg";filename*=UTF-8''BK914.jpg
-*/	
+	/**
+	 Parses a content disposition string like:
+	 attachment;filename="BK914.jpg";filename*=UTF-8''BK914.jpg
+
+	 $str — content disposition string.
+
+	 @return array Name/value pairs.
+	*/
 	function parseContentDisposition($str) {
 	
 		$blocks = explode(";", $str);

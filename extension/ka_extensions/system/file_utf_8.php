@@ -8,11 +8,13 @@
 	
 namespace Opencart\Extension\KaExtensions\System;
 
-//
-// this option adds a filter for processing \r character to \n in files because fgetcsv function 
-// may fail randomly in detrmining the end of MacOS file line. It can be disabled to improve 
-// the speed of file processing for the import scripts where MacOS csv files are not used.
-//
+/**
+	This option adds a filter for processing \r character to \n in files because fgetcsv function
+	may fail randomly in determining the end of MacOS file line. It can be disabled to improve
+	the speed of file processing for the import scripts where MacOS csv files are not used.
+
+	@internal
+*/
 class macfix_filter extends \php_user_filter {
 	#[\ReturnTypeWillChange]
 	function filter($in, $out, &$consumed, $closing) {
@@ -29,6 +31,12 @@ class macfix_filter extends \php_user_filter {
 
 stream_filter_register("macfix", '\extension\ka_extensions\macfix_filter') or die("Failed to register filter");
 
+/**
+	Reads and writes files in different charsets through UTF-8 conversion filters. It handles BOM
+	and MacOS line endings.
+
+	@package Service
+*/
 class FileUtf8 {
 
 	protected $lastError = '';
@@ -44,10 +52,20 @@ class FileUtf8 {
 	
 	protected $is_filter_applied = false;
 
+	/**
+	 Returns the last error.
+
+	 @return string
+	*/
 	public function getLastError() {
 		return $this->lastError;
 	}
 
+	/**
+	 Moves the file pointer to the beginning of the file data (after BOM).
+
+	 @return void
+	*/
 	public function rewind() {
 		rewind($this->handle);
 		if ($this->bom_size) {
@@ -55,6 +73,16 @@ class FileUtf8 {
 		}
 	}
 		
+	/**
+	 Opens a file and appends charset conversion filters.
+
+	 $filename — file path.
+	 $mode — 'r', 'w' or 'a'.
+	 $options — array of options: enable_macfix — convert MacOS line endings on reading.
+	 $charset — file charset.
+
+	 @return resource|false|null File handle; false on error (see getLastError()).
+	*/
 	public function fopen($filename, $mode, $options = array(), $charset = 'UTF-8') {
 
 		$this->is_filter_applied = false;
@@ -151,13 +179,16 @@ class FileUtf8 {
 		return $this->handle;
 	}
 
-	/*
-		fseek - works in bytes always (regardless of the stream encoding)
-		ftell - measures length in bytes for UTF-8 charset
-		fread - reads a number of utf characters (not bytes)
+	/**
+	 Moves the file pointer to the offset. When conversion filters are applied the file is read from
+	 the beginning up to the offset.
 
-		PARAMETERS:
-			offset - length in bytes for utf-8 stream
+ Notes: fseek works in bytes always (regardless of the stream encoding), ftell measures length
+ in bytes for UTF-8 charset, fread reads a number of utf characters (not bytes).
+
+	 $offset — offset in bytes.
+
+	 @return int 0 on success, -1 on error.
 	*/
 	public function fseek($offset) {
 	
@@ -209,6 +240,11 @@ class FileUtf8 {
 	}
 
 	
+	/**
+	 Closes the file.
+
+	 @return bool
+	*/
 	public function fclose() {
 		$result = fclose($this->handle);
 		$this->handle = null;

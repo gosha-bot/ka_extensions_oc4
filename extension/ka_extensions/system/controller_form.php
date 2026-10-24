@@ -9,11 +9,23 @@
 */
 namespace Opencart\Extension\KaExtensions\System;
 
+/**
+	A base controller class for a basic form page. It builds the field list, url parameters
+	and breadcrumbs, validates submitted values and passes pagination data to the template.
+
+	@package Controller
+*/
 abstract class ControllerForm extends Controller {
 
 	use TraitControllerForm;
 	protected $pagination;
 	
+	/**
+	 Loads common language strings, prepares the form fields, adds the 'Home' breadcrumb and
+	 initializes url parameters of the page.
+
+	 @return void
+	*/
 	protected function onLoad() {
 
 		$this->load->language('extension/ka_extensions/common');
@@ -53,9 +65,28 @@ abstract class ControllerForm extends Controller {
 	}
 
 	
+	/**
+	 Returns the form fields definition. Each field is an array with keys like 'code', 'type',
+	 'title', 'required'. Missing 'code' values are filled in with the array keys.
+
+	 @return array
+	*/
 	abstract protected function getFields();	
+	/**
+	 Returns page url parameters with their default values. They are passed to UrlParams.
+
+	 @return array
+	*/
 	abstract protected function getPageUrlParams();
 	
+	/**
+	 Adds a breadcrumb to the page data.
+
+	 $text — breadcrumb text.
+	 $href — breadcrumb link.
+
+	 @return void
+	*/
 	protected function addBreadcrumb($text, $href = '') {
 		if (!isset($this->data['breadcrumbs'])) {
 			$this->data['breadcrumbs'] = array();
@@ -67,6 +98,15 @@ abstract class ControllerForm extends Controller {
    		);
 	}
 	
+	/**
+	 Renders the page. Adds pagination data if the pagination object is set and enables a multipart
+	 form when the fields contain a file field.
+
+	 $page — template route.
+	 $data — extra template data.
+
+	 @return mixed Result of Controller::showPage().
+	*/
 	protected function showPage($page = '', $data = array()) {
 	
 		if (!empty($this->pagination)) {
@@ -88,6 +128,11 @@ abstract class ControllerForm extends Controller {
 		return parent::showPage($page, $data);
 	}
 	
+	/**
+	 Validates the modify permission and the posted field values.
+
+	 @return bool True if the form data are valid.
+	*/
 	protected function validate() {
 	
 		if (!$this->validateModify()) {
@@ -102,6 +147,12 @@ abstract class ControllerForm extends Controller {
 	}	
 	
 	
+  	/**
+  	 Checks that the current user has the 'modify' permission for the current route. Adds an error
+  	 message to the top messages otherwise.
+
+  	 @return bool True if the permission is granted.
+  	*/
   	protected function validateModify() {
   	
   		if (version_compare(VERSION, '4.0.2.0', '>=')) {

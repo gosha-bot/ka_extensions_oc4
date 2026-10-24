@@ -10,12 +10,22 @@ namespace Opencart\Extension\KaExtensions\System;
 
 use Tables;
 
+/**
+	Base model class for models of Ka extensions.
+
+	@package Core
+*/
 abstract class Model extends \Opencart\System\Engine\Model {
 
 	use TraitSession, TraitModel;
 
 	protected $kadb;
 	
+	/**
+	 Creates the Db helper object and calls onLoad().
+
+	 $registry — OpenCart registry.
+	*/
 	function __construct($registry) {
 		parent::__construct($registry);
 
@@ -25,6 +35,11 @@ abstract class Model extends \Opencart\System\Engine\Model {
 	}
 	
 	
+	/**
+	 Called at the end of the constructor. Override it to initialize the model.
+
+	 @return bool
+	*/
 	protected function onLoad() {
 		return true;
 	}

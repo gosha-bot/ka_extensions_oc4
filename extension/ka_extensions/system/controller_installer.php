@@ -8,6 +8,14 @@
 	
 namespace Opencart\Extension\KaExtensions\System;
 
+/**
+	This class contains essential parts of the module installation. It reads the extension manifest
+	(install.json), checks compatibility with the Ka Extensions library and the database, creates
+	tables and grants permissions to the extension pages. Module settings pages inherit from it
+	through ControllerSettings.
+
+	@package Controller
+*/
 abstract class ControllerInstaller extends Controller {
 
 	// contstants
@@ -29,13 +37,23 @@ abstract class ControllerInstaller extends Controller {
 	private $kamodel_common;
 	private $kamodel_patchdb;
 	
-	/*
-		This function returns a list of extension routes which should be enabled on extension installation.
+	/**
+	 Returns a list of extension routes which should get access and modify permissions on extension
+	 installation. The routes are relative to 'extension/<ext_code>/'.
+
+	 @return array
 	*/
 	protected function getExtensionPages() {
 		return array();
 	}
 	
+	/**
+	 Loads required models and the extension manifest (install.json) and fills in the extension
+	 version, links and the minimum Ka Extensions version from it.
+
+	 @throws \Exception If ext_code is not defined or the manifest is not found.
+	 @return void
+	*/
 	protected function onLoad() {
 	
 		if (empty($this->ext_code)) {
@@ -66,6 +84,14 @@ abstract class ControllerInstaller extends Controller {
 		}
 	}	
 	
+	/**
+	 Checks that the extension is compatible with the installed Ka Extensions library and the database.
+
+	 $tables — tables definition to check.
+	 $messages — receives error messages.
+
+	 @return bool True if the extension is compatible.
+	*/
 	protected function checkCompatibility(&$tables, &$messages) {
 	
 		// check ka_extensions version 
@@ -96,9 +122,14 @@ abstract class ControllerInstaller extends Controller {
 		return true;
 	}
 	
-	/*
-		$params - for now it is just a way to prevent calling these methods from url. Later the extension manager can 
-		          pass some information to through this array.
+	/**
+	 Installs the extension: checks compatibility, patches the database by the tables definition and
+	 grants permissions to the extension pages for the current user group.
+
+	 $params — for now it is just a way to prevent calling this method from url. Later the extension
+	 manager can pass some information through this array.
+
+	 @return bool True on success.
 	*/
 	public function install($params) {
 
@@ -126,9 +157,13 @@ abstract class ControllerInstaller extends Controller {
 	}
 	
 
-	/*
-		$params - for now it is just a way to prevent calling these methods from url. Later the extension manager can 
-		          pass some information through this array.
+	/**
+	 Uninstalls the extension and revokes permissions to the extension pages from all user groups.
+
+	 $params — for now it is just a way to prevent calling this method from url. Later the extension
+	 manager can pass some information through this array.
+
+	 @return bool
 	*/
 	public function uninstall($params) {
 
@@ -154,6 +189,11 @@ abstract class ControllerInstaller extends Controller {
 	}
 	
 	
+	/**
+	 Returns the extension title with its version, e.g. 'My Module (ver.1.0.0.0)'.
+
+	 @return string
+	*/
 	public function getTitle() {
 		$str = $this->ini['name'] . ' (ver.' . $this->ini['version'] . ')';
 		
@@ -161,15 +201,30 @@ abstract class ControllerInstaller extends Controller {
 	}	
 	
 	
+	/**
+	 Returns the extension version from the manifest.
+
+	 @return string
+	*/
 	public function getVersion() {
 		return $this->extension_version;
 	}
 	
 	
+	/**
+	 Returns the extension link from the manifest.
+
+	 @return string
+	*/
 	public function getExtLink() {
 		return $this->ext_link;
 	}
 	
+	/**
+	 Returns the documentation link from the manifest.
+
+	 @return string
+	*/
 	public function getDocsLink() {
 		return $this->docs_link;
 	}	

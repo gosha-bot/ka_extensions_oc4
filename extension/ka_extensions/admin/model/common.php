@@ -11,6 +11,11 @@ namespace Opencart\Admin\Model\Extension\KaExtensions;
 use \Opencart\Extension\KaExtensions\System\Curl;
 use \Opencart\Extension\KaExtensions\System\KaGlobal;
 
+/**
+	Common functions of the Ka Extensions admin pages: manifests, extension lists and settings.
+
+	@internal
+*/
 class Common extends \Opencart\Extension\KaExtensions\System\Model {
 
 	protected $kacurl;

@@ -11,6 +11,11 @@ namespace Opencart\Extension\KaExtensions\System;
 
 use \Twig\TwigFunction;
 
+/**
+	Adds Ka Extensions functions to Twig templates.
+
+	@internal
+*/
 class TwigExtension extends \Twig\Extension\AbstractExtension
 {
 	/**

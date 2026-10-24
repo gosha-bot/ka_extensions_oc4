@@ -36,6 +36,11 @@
 
 namespace extension\ka_extensions;
 
+/**
+	Applies xml patches from extension kamod directories to files.
+
+	@internal
+*/
 class KaPatch {
 
 	protected $root_dir;

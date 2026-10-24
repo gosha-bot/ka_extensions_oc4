@@ -7,6 +7,11 @@
 
 namespace Opencart\Extension\KaExtensions\System;
 
+/**
+	Formats and parses values (numbers, prices, dates, weights, lengths, sizes) with language based settings.
+
+	@package Service
+*/
 class Format {
 
 	protected $registry;
@@ -24,6 +29,11 @@ class Format {
 	protected $weight_classes_by_id;
 	protected $weight_classes_by_unit;
 	
+	/**
+	 Loads language strings and length and weight classes.
+
+	 $language_id — language ID; the current admin or store language by default.
+	*/
 	public function __construct($language_id = null) {
 
 		$this->registry = KaGlobal::getRegistry();
@@ -92,10 +102,13 @@ class Format {
 		return true;
 	}
 	
-	/*
-		PARAMETERS:
-			$str   - string
-			$chars - a character or array of characters
+	/**
+	 Trims the string and removes the characters from its beginning and end.
+
+	 $str — string.
+	 $chars — a character or array of characters.
+
+	 @return string
 	*/
 	public function strip($str, $chars) {
 		$str = trim($str);
@@ -122,6 +135,13 @@ class Format {
 		return $res;
 	}
 
+	/**
+	 Removes all characters except digits, '-', '.', ',' and '`' and replaces commas with dots.
+
+	 $number — value to parse.
+
+	 @return string
+	*/
 	public static function parseNumber($number) {
 
 		// remove all useless characters from the price
@@ -133,8 +153,12 @@ class Format {
 		return $number;
 	}
 		
-	/*
-		supports values like '.99', '0,99', '$1,200.00', '123,456.78' => '123456.78'
+	/**
+	 Parses a price. Supports values like '.99', '0,99', '$1,200.00', '123,456.78' => '123456.78'.
+
+	 $price — value to parse.
+
+	 @return float|string
 	*/
 	public static function parsePrice($price) {
 	
@@ -150,6 +174,13 @@ class Format {
 		return $res;
 	}
 
+	/**
+	 Converts a price to float.
+
+	 $price — price value.
+
+	 @return float
+	*/
 	public function formatPrice($price) {
 		
 		$price = (float) $price;
@@ -157,6 +188,13 @@ class Format {
 		return $price;
 	}
 	
+    /**
+     Parses a date string.
+
+     $str — date string.
+
+     @return string Date in 'Y-m-d H:i:s' format; empty string on error.
+    */
     public function parseDate($str) {
     
     	$res = '';
@@ -170,8 +208,12 @@ class Format {
     }
     
 		
-	/*
-		this function should parse the date and try to return formated as YYYY-MM-DD.
+	/**
+	 Converts a date to YYYY-MM-DD format. Supports 'yyyy-mm-dd', 'mm/dd/yyyy' and 'dd.mm.yyyy'.
+
+	 $date — date string, it is replaced with the formatted date.
+
+	 @return bool True if the date was recognized.
 	*/
 	public function formatDate(&$date) {
 	
@@ -201,9 +243,12 @@ class Format {
 		return false;
 	}
 	
-	/*
-		$diff - number of seconds since specific moment
-	
+	/**
+	 Formats a time interval like '1 days 2 hours 3 minutes 4 seconds'.
+
+	 $diff — number of seconds since specific moment.
+
+	 @return string
 	*/
 	public function formatPassedTime($diff) {
 
@@ -227,8 +272,12 @@ class Format {
 	}
 
 	
-  	/*
-  		function converts values like 10M to bytes
+	/**
+	 Converts values like 10M to bytes. Supports 'k', 'm' and 'g' suffixes.
+
+	 $file_size — size string.
+
+	 @return int
 	*/
 	public function convertToByte($file_size) {
 		$val = trim($file_size);
@@ -245,8 +294,12 @@ class Format {
 	}
 
 
-	/*
-		Function converts value to human readable format like 10.1 Mb 
+	/**
+	 Converts a value to human readable format like 10.1 Mb.
+
+	 $val — number of bytes or a size string like 10M.
+
+	 @return string
 	*/
 	public function convertToMegabyte($val) {
 	
@@ -270,19 +323,13 @@ class Format {
 	}
 	
 	
-	/*
-		PARAMETERS:
-			weight - value like this 0.0234g
+	/**
+	 Parses a weight value like '0.0234g'. The function does NOT create a new weight class.
 
-		RETURNS:
-			array (
-				value           -> 0.0234
-				weight_class_id -> 4
-			)
+	 $weight — weight string.
 
-		NOTES:
-			the function does NOT create a new weight class
-	*/	
+	 @return array Array like array('value' => 0.0234, 'weight_class_id' => 4).
+	*/
 	public function parseWeight($weight) {
 
 		$pair = array();
@@ -297,6 +344,13 @@ class Format {
 	}
 
 	
+	/**
+	 Parses a length value like '10cm'. The function does NOT create a new length class.
+
+	 $length — length string.
+
+	 @return array Array with 'value' and 'length_class_id' keys.
+	*/
 	public function parseLength($length) {
 	
 		$pair = array();
@@ -311,6 +365,13 @@ class Format {
 	}
 
 	
+	/**
+	 Returns a length class ID by its unit.
+
+	 $unit — unit like 'cm'.
+
+	 @return int|string Empty string if the unit is not found.
+	*/
 	public function getLengthClassIdByUnit($unit) {
 
 		$unit = mb_strtolower($unit);	
@@ -324,6 +385,13 @@ class Format {
 	}
 	
 
+	/**
+	 Returns a weight class ID by its unit.
+
+	 $unit — unit like 'kg'.
+
+	 @return int|string Empty string if the unit is not found.
+	*/
 	public function getWeightClassIdByUnit($unit) {
 	
 		$unit = mb_strtolower($unit);
@@ -336,6 +404,16 @@ class Format {
 		return $class_id;
 	}
 	
+	/**
+	 Formats a weight with 2 decimals and its unit.
+
+	 $val — weight value.
+	 $class_id — weight class ID.
+	 $decimal_point — decimal separator.
+	 $thousand_point — thousands separator.
+
+	 @return string
+	*/
 	public function formatWeight($val, $class_id, $decimal_point = '.', $thousand_point = '') {
 		
 		$val = doubleval($val);
@@ -346,6 +424,13 @@ class Format {
 		return $val;
 	}
 		
+	/**
+	 Returns a weight unit by the weight class ID.
+
+	 $class_id — weight class ID.
+
+	 @return string
+	*/
 	public function getWeightUnit($class_id) {
 		$unit = '';
 		if (!empty($this->weight_classes_by_id[$class_id])) {
@@ -355,6 +440,16 @@ class Format {
 		return $unit;
 	}
 	
+	/**
+	 Formats a length with 2 decimals and its unit.
+
+	 $val — length value.
+	 $class_id — length class ID.
+	 $decimal_point — decimal separator.
+	 $thousand_point — thousands separator.
+
+	 @return string
+	*/
 	public function formatLength($val, $class_id, $decimal_point = '.', $thousand_point = '') {
 
 		$val = doubleval($val);
@@ -365,6 +460,13 @@ class Format {
 		return $val;
 	}
 	
+	/**
+	 Returns a length unit by the length class ID.
+
+	 $class_id — length class ID.
+
+	 @return string
+	*/
 	public function getLengthUnit($class_id) {
 
 		$unit = '';

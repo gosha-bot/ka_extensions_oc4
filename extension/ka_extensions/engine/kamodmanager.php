@@ -10,6 +10,11 @@ namespace extension\ka_extensions;
 
 include_once(__DIR__ . '/kamodbuilder.php');
 
+/**
+	Manages the kamod cache and resolves kamod copies of classes and templates.
+
+	@internal
+*/
 class KamodManager {
 
 	public const ACTIVE_KAMOD_FILE = 'active.kamod';

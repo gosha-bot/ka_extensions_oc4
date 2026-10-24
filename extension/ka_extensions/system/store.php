@@ -8,6 +8,11 @@
 	
 namespace Opencart\Extension\KaExtensions\System;
 
+/**
+	Gives information about stores. Results are cached per store.
+
+	@package Service
+*/
 class Store {
 
 	public $data = array();
@@ -17,6 +22,11 @@ class Store {
 	
 	static $cache = array();
 
+	/**
+	 Loads store information and settings.
+
+	 $store_id — store ID.
+	*/
 	protected function __construct($store_id = 0) {
 
 		$this->registry = KaGlobal::getRegistry();
@@ -56,6 +66,13 @@ class Store {
 	}
 
 	
+	/**
+	 Returns store information: 'store_name', 'sender', 'store_url', 'store_login_url'.
+
+	 $store_id — store ID.
+
+	 @return array
+	*/
 	static public function getStoreInfo($store_id) {
 
 		if (!empty(self::$cache[$store_id])) {
@@ -67,6 +84,13 @@ class Store {
 	}
 	
 	
+	/**
+	 Returns the store settings.
+
+	 $store_id — store ID.
+
+	 @return \Opencart\System\Engine\Config
+	*/
 	static public function getStoreConfig($store_id) {
 
 		if (!empty(self::$cache[$store_id])) {

@@ -10,6 +10,11 @@ namespace Opencart\System\Extension\KaExtensions\Library;
 
 use KaGlobal;
 
+/**
+	Kamod override of the OpenCart mail library. Adds named attachments and logging.
+
+	@internal
+*/
 class Mail extends \Opencart\System\Library\Mail {
 
 	public function addNamedAttachment($filename, $name) {

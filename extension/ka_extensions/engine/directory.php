@@ -2,6 +2,11 @@
 
 namespace extension\ka_extensions;
 
+/**
+	Directory helper functions for kamod.
+
+	@internal
+*/
 class Directory {
 
 

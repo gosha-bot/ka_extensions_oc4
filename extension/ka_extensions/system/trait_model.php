@@ -10,6 +10,11 @@ namespace Opencart\Extension\KaExtensions\System;
 
 use extension\KaExtensions\Tables;
 
+/**
+	Helpful functions for models.
+
+	@package Core
+*/
 trait TraitModel {
 
 	protected $lastError;

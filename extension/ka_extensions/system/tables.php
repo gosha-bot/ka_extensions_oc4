@@ -8,6 +8,11 @@
 	
 namespace Opencart\Extension\KaExtensions\System;
 
+/**
+	Gives access to table objects by their model path or class name. Objects are cached.
+
+	@package DB
+*/
 class Tables {
 
 	protected static $tables = array();
@@ -17,7 +22,8 @@ class Tables {
 
 	 $tbl — table model path or class name with '/' separators.
 
-	 @return object Table object. Throws an exception if the class does not exist.
+	 @throws \Exception If the table class does not exist.
+	 @return object Table object.
 	*/
 	public static function getTable($tbl) {
 	

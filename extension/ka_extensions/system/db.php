@@ -8,6 +8,12 @@
 	
 namespace Opencart\Extension\KaExtensions\System;
 
+/**
+	A wrapper around the OpenCart database object with helper methods for building and running
+	insert, update and select queries.
+
+	@package DB
+*/
 class Db {
 
 	protected $db = null;
@@ -75,6 +81,7 @@ class Db {
 	 $is_replace — use REPLACE instead of INSERT.
 	 $update_on_duplicate — add ON DUPLICATE KEY UPDATE with the same values.
 
+	 @throws \Exception If the table name or the data array is empty.
 	 @return int|false Last insert id or false on failure.
 	*/
 	public function insert($tbl, $arr, $is_replace = false, $update_on_duplicate = false) {
@@ -137,6 +144,7 @@ class Db {
 	 $arr — field => value pairs.
 	 $where — WHERE condition without the WHERE keyword; empty updates all rows.
 
+	 @throws \Exception If the table name or the data array is empty.
 	 @return mixed Result of the database query.
 	*/
 	public function update($tbl, $arr, $where = '') {
@@ -209,7 +217,8 @@ class Db {
 	 $qry_string — SQL query.
 	 $key — column whose value is used as the array key.
 
-	 @return array|false Rows indexed by the key or false if there are no rows. Throws an exception if the column is missing.
+	 @throws \Exception If the key column is missing.
+	 @return array|false Rows indexed by the key or false if there are no rows.
 	*/
 	public function queryHash($qry_string, $key) {
 	

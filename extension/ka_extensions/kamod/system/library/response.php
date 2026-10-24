@@ -8,6 +8,11 @@
 
 namespace Opencart\System\Extension\KaExtensions\Library;
 
+/**
+	Kamod override of the OpenCart response library. Adds getHeaders() and setHeaders().
+
+	@internal
+*/
 class Response extends \Opencart\System\Library\Response {
 	
 	public function getHeaders(): array {

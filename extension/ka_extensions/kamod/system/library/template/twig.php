@@ -5,6 +5,11 @@ use \Opencart\Extension\KaExtensions\System\KaGlobal;
 use \extension\ka_extensions\KamodManager;
 use \Opencart\Extension\KaExtensions\System\TwigExtension;
 
+/**
+	Kamod override of the OpenCart Twig template engine. Loads kamod copies of templates.
+
+	@internal
+*/
 class Twig extends \Opencart\System\Library\Template\Twig {
 
 	protected $kamod_cache_loader;

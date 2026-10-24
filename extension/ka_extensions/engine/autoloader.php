@@ -15,6 +15,11 @@ namespace extension\ka_extensions;
 
 include_once(__DIR__ . '/kamodmanager.php');
 
+/**
+	Replaces the standard OpenCart autoloader and loads modified kamod copies of classes.
+
+	@internal
+*/
 class Autoloader {
 
 	protected $parent_autoloader;

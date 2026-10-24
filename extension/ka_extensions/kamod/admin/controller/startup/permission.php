@@ -10,6 +10,11 @@
 
 namespace Opencart\Admin\Controller\Extension\KaExtensions\Startup;
 
+/**
+	Kamod override of the admin permission check. The 'Ka Extensions' page is always allowed.
+
+	@internal
+*/
 class Permission extends \Opencart\Admin\Controller\Startup\Permission {
 
 	public function index(): ?\Opencart\System\Engine\Action {

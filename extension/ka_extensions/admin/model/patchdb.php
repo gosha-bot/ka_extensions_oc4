@@ -8,6 +8,11 @@
 
 namespace Opencart\Admin\Model\Extension\KaExtensions;
 
+/**
+	Checks and patches the database by the tables definition of an extension.
+
+	@internal
+*/
 class PatchDb extends \Opencart\Extension\KaExtensions\System\Model {
 
 	/*

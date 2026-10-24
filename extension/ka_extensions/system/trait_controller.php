@@ -8,6 +8,11 @@
 
 namespace Opencart\Extension\KaExtensions\System;
 
+/**
+	Adds some helpful functions and makes it possible to suppress output of a parent controller.
+
+	@package Core
+*/
 trait TraitController {
 
 	protected $template = '';

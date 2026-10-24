@@ -8,6 +8,11 @@
 
 namespace Opencart\Admin\Controller\Extension\KaExtensions\Common;
 
+/**
+	Kamod override of the admin header controller.
+
+	@internal
+*/
 class Header extends \Opencart\Admin\Controller\Common\Header {
 
 	use \Opencart\Extension\KaExtensions\System\TraitController;

@@ -8,6 +8,11 @@
 
 namespace Opencart\Extension\KaExtensions\System;
 
+/**
+	Provides functions for controller/model to generate unique session variables within a class.
+
+	@package Service
+*/
 trait TraitSession {
 
 	/**

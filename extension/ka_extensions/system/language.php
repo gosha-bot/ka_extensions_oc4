@@ -10,6 +10,11 @@ namespace Opencart\Extension\KaExtensions\System;
 
 use \Opencart\Extension\KaExtensions\System\KaGlobal;
 
+/**
+	Helps to get language data by ID or vice versa.
+
+	@package Service
+*/
 class Language {
 
 	protected $registry;

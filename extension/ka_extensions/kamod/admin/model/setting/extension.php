@@ -12,6 +12,11 @@ namespace Opencart\Admin\Controller\Extension\KaExtensions\Setting;
 use \extension\ka_extensions\KamodManager;
 use \extension\ka_extensions\Directory;
 
+/**
+	Kamod override of the admin extension model. Activates and deactivates kamod files of extensions.
+
+	@internal
+*/
 class Extension extends \Opencart\Admin\Model\Setting\Extension {
 
 	/*
