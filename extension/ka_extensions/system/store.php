@@ -50,7 +50,7 @@ class Store {
 				if (!$setting['serialized']) {
 					$this->config->set($setting['key'], $setting['value']);
 				} else {
-					$this->config->set($setting['key'], json_decode($result['value'], true));
+					$this->config->set($setting['key'], json_decode($setting['value'], true));
 				}
 			}
 			
