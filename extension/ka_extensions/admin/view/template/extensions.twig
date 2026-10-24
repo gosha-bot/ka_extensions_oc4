@@ -104,6 +104,25 @@
 			    </table>
 			  </div>
 			</fieldset>
+
+			<fieldset>
+			  <legend>{{ t('txt_safe_mode') }}</legend>
+			  <form method="post" action="{{ action_save_safe_mode }}" id="form-safe-mode">
+			    <div class="row mb-3">
+			      <label class="col-sm-2 col-form-label" for="input-safe_mode_code">{{ t('txt_title_safe_mode_code') }}</label>
+			      <div class="col-sm-10">
+			        <div class="input-group">
+			          <input type="text" name="safe_mode_code" value="{{ safe_mode_code }}" id="input-safe_mode_code" class="form-control" pattern="[A-Za-z0-9]*" autocomplete="off"/>
+			          <button type="submit" class="btn btn-primary">{{ t('button_save') }}</button>
+			        </div>
+			        <div class="form-text">{{ t('txt_tooltip_safe_mode_code') }}</div>
+			        {% if safe_mode_code %}
+			          <div class="form-text">{{ t('txt_safe_mode_url') }} <code>{{ safe_mode_url }}{{ safe_mode_code }}</code></div>
+			        {% endif %}
+			      </div>
+			    </div>
+			  </form>
+			</fieldset>
 		  
 			
 <script type="text/javascript"><!--

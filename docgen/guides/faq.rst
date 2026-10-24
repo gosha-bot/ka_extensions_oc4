@@ -53,6 +53,13 @@ My kamod class is ignored. What should I check?
 - The admin area is not in :doc:`safe_mode`.
 - The same file is not changed by OCMOD (see :doc:`ocmod`).
 
+The admin area is broken after a module was installed. How can I open it?
+-------------------------------------------------------------------------
+
+Use :doc:`safe_mode`: open ``admin/index.php?route=ka_safe_mode&code=<your code>``. The code is set on the
+*Ka Extensions* page or in ``config/kamod.php``. In safe mode kamod is off in the admin area of your
+browser, so you can disable or uninstall the module.
+
 A page is empty after my template change. Why?
 ----------------------------------------------
 

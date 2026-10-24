@@ -10,16 +10,93 @@
 
 namespace extension\ka_extensions;
 
-// safe mode, disable all kamod features for the current admin session
+// safe mode, disable all kamod features for the current admin session.
+// It is turned on by the admin/index.php?route=ka_safe_mode&code=<code> URL where the code
+// is defined on the 'Ka Extensions' page and stored in config/kamod.php.
+// admin/index.php?route=ka_safe_mode without a code turns it off.
 //
 if (defined('APPLICATION') && APPLICATION == 'Admin') {
-	if (!empty($_COOKIE['ka_safe_mode'])) {
-		return;
+
+	$ka_safe_mode_code = '';
+	$ka_safe_mode_url  = (!empty($_GET['route']) && $_GET['route'] == 'ka_safe_mode');
+	if ($ka_safe_mode_url) {
+		if (isset($_GET['code']) && is_string($_GET['code'])) {
+			$ka_safe_mode_code = $_GET['code'];
+		}
+	} elseif (isset($_COOKIE['ka_safe_mode_code']) && is_string($_COOKIE['ka_safe_mode_code'])) {
+		$ka_safe_mode_code = $_COOKIE['ka_safe_mode_code'];
 	}
 
-	if (!empty($_GET['route']) && $_GET['route'] == 'ka_safe_mode') {
-		setcookie("ka_safe_mode", 1);
-		return;
+	if ($ka_safe_mode_code !== '' || $ka_safe_mode_url) {
+
+		$ka_cookie_options = array(
+			'path'     => rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\') . '/',
+			'secure'   => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off'),
+			'httponly' => true,
+			'samesite' => 'Lax',
+		);
+
+		$ka_config = (function() {
+			$_ = array();
+			if (is_file(DIR_CONFIG . 'kamod.php')) {
+				include(DIR_CONFIG . 'kamod.php');
+			}
+			return $_;
+		})();
+
+		if ($ka_safe_mode_code !== '' && !empty($ka_config['safe_mode_code']) && is_string($ka_config['safe_mode_code'])
+			&& hash_equals($ka_config['safe_mode_code'], $ka_safe_mode_code)
+		) {
+			/**
+				@internal
+			*/
+			define('IS_KAMOD_SAFE_MODE', 1);
+
+			if ($ka_safe_mode_url) {
+				setcookie('ka_safe_mode_code', $ka_safe_mode_code, $ka_cookie_options);
+				header('Location: index.php');
+				exit;
+			}
+
+			// kamod pages do not work in safe mode, show a short notice instead of the 'Ka Extensions' page
+			//
+			if (!empty($_GET['route']) && is_string($_GET['route']) && strpos($_GET['route'], 'extension/ka_extensions/') === 0) {
+				$ka_lang = 'en-gb';
+				if (isset($_COOKIE['language']) && is_string($_COOKIE['language'])
+					&& preg_match('/^[a-z]{2}-[a-z]{2}$/', $_COOKIE['language'])
+					&& is_file(__DIR__ . '/../admin/language/' . $_COOKIE['language'] . '/extensions.php')
+				) {
+					$ka_lang = $_COOKIE['language'];
+				}
+				$_ = array();
+				include(__DIR__ . '/../admin/language/en-gb/extensions.php');
+				if ($ka_lang != 'en-gb') {
+					include(__DIR__ . '/../admin/language/' . $ka_lang . '/extensions.php');
+				}
+				$ka_html = function($key) use ($_) {
+					return htmlspecialchars(isset($_[$key]) ? $_[$key] : $key, ENT_QUOTES, 'UTF-8');
+				};
+				header('Content-Type: text/html; charset=utf-8');
+				echo '<!DOCTYPE html><html><head><meta charset="utf-8"><title>' . $ka_html('txt_safe_mode') . '</title></head>'
+					. '<body style="font-family: sans-serif; margin: 40px;"><h1>' . $ka_html('txt_safe_mode') . '</h1>'
+					. '<p id="ka-safe-mode-active">' . $ka_html('txt_safe_mode_active') . '</p>'
+					. '<p><a href="index.php">' . $ka_html('txt_safe_mode_dashboard') . '</a> | '
+					. '<a href="index.php?route=ka_safe_mode">' . $ka_html('txt_safe_mode_exit') . '</a></p>'
+					. '</body></html>';
+				exit;
+			}
+			return;
+		}
+
+		// a wrong or outdated code
+		if (isset($_COOKIE['ka_safe_mode_code'])) {
+			setcookie('ka_safe_mode_code', '', array_merge($ka_cookie_options, array('expires' => time() - 3600)));
+		}
+
+		if ($ka_safe_mode_url) {
+			header('Location: index.php');
+			exit;
+		}
 	}
 }
 
