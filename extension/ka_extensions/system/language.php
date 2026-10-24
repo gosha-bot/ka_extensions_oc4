@@ -8,7 +8,7 @@
 	
 namespace Opencart\Extension\KaExtensions\System;
 
-use \extension\ka_extensions\KaGlobal;
+use \Opencart\Extension\KaExtensions\System\KaGlobal;
 
 class Language {
 
@@ -46,7 +46,9 @@ class Language {
 		$this->language_directory = $row['code'];
 
 		$this->language = new \Opencart\System\Library\Language($this->language_directory);
-		$this->language->addPath('extension/ka_extensions');		
+		$this->language->addPath(DIR_LANGUAGE);
+		// common language files of Ka Extensions for emails are in the catalog directory
+		$this->language->addPath('extension/ka_extensions', DIR_EXTENSION . 'ka_extensions/catalog/language/');
 		$this->language->load('default');
 	}
 

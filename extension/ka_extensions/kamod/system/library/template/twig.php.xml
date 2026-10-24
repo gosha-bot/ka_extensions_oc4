@@ -7,7 +7,7 @@
 			$this->extendTwig($twig);
 			return $twig->render(]]></text>
 		</operation>
-		<operation type="replace">
+		<operation type="replace" skip="true">
 			<search regexp="true"><![CDATA[\$file\s*=\s*\\VQModKa\:\:modCheck\(\$file\);]]></search>
 			<text ><![CDATA[
 				//ka-extensions 
@@ -19,7 +19,7 @@
 				}
 				///ka-extensions]]></text>
 		</operation>
-		<operation type="replace">
+		<operation type="replace" skip="true">
 			<search><![CDATA[class Twig {]]></search>
 			<text><![CDATA[
 			class Twig {

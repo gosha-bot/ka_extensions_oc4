@@ -31,7 +31,7 @@ class Mail extends \Opencart\System\Library\Mail {
 		$log->write($msg);
 		
 		if ($type == 'E') {
-			KaGlobal::getRegistry()->get('log')->write($error);;
+			KaGlobal::getRegistry()->get('log')->write($msg);
 		}		
 	}
 	

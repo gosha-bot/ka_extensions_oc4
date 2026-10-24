@@ -102,7 +102,7 @@ class Twig extends \Opencart\System\Library\Template\Twig {
 		// kamod cache is a default template for stores
 		$chain_loader->addLoader($this->kamod_cache_loader);
 		
-		// opencart loader is a a standard template directory
+		// opencart loader is a standard template directory
 		$chain_loader->addLoader($this->loader);
 		
 		$this->custom_loader = $chain_loader;
