@@ -72,16 +72,11 @@ Methods:
     Add conditions joined with ``AND``. With two parameters the value is escaped and compared with ``=``.
     An array of conditions is joined with ``OR``.
 ``orderBy($expression)``, ``groupBy($expression)``
-    Set ``ORDER BY`` and ``GROUP BY``.
+    Add expressions to ``ORDER BY`` and ``GROUP BY``. Several calls are joined with a comma.
 ``limit($start, $limit)``
     Sets ``LIMIT``.
 ``getSql()``, ``query()``
     Return the SQL text or run the query (the result of ``$this->db->query()``).
-
-.. warning::
-
-    In Ka Extensions 5.1.1.0 several ``orderBy()`` or ``groupBy()`` calls are joined without a comma.
-    Pass all expressions in one call: ``$qb->orderBy('l.sort_order, pd.name')``.
 
 Tables of the Module
 --------------------

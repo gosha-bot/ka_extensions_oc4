@@ -56,3 +56,11 @@ Ka Extensions Fields
     OpenCart 4.1 or Ka Extensions.
 
 The ``ka_extensions`` extension itself does not have ``ka_type``: it is not listed on its own page.
+
+Not Supported
+-------------
+
+``install_before``, ``install_after``
+    The fields of ``kamod.ini`` in Ka Extensions for OpenCart 3 that set the order of modules in the
+    class chain are not supported in OpenCart 4 yet. Kamod ignores them, the order of modules is not
+    defined (see :doc:`overriding_other_modules`).

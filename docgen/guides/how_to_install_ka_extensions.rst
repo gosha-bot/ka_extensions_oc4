@@ -48,13 +48,12 @@ Updating
 --------
 
 OpenCart 4 does not accept an archive of an extension that is already installed, and it does not
-uninstall Ka Extensions while modules based on it are installed. Uninstalling the modules is not a good
-option either: their settings are deleted.
+uninstall Ka Extensions while modules based on it are installed. For now Ka Extensions is updated by
+uninstalling and installing again:
 
-To update Ka Extensions, copy the files of the new archive over the ``extension/ka_extensions/``
-directory of the store (for example, with FTP). Kamod rebuilds its cache automatically because
-``extension/ka_extensions/install.json`` becomes newer than the cache. Note that copying files does not
-update the *Ka Extensions Ocmod* modification, OpenCart keeps its XML in the database.
-
-When no modules based on Ka Extensions are installed, you can also uninstall the old version on the
-*Extensions > Installer* page, delete it from the list and install the new archive as described above.
+1. Uninstall the modules based on Ka Extensions: first on the *Extensions > Ka Extensions* page, then on
+   the *Extensions > Installer* page (see :doc:`removing_ka_extensions`). Uninstalling a module on the
+   Ka Extensions page deletes its settings, save them before.
+2. Uninstall Ka Extensions on the *Extensions > Installer* page and delete the old archive from the list.
+3. Install the new archive of Ka Extensions as described above.
+4. Install the modules again and restore their settings.

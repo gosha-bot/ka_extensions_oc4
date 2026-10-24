@@ -93,11 +93,21 @@ Real examples from Ka Extensions:
 Errors
 ------
 
-- When the search string is not found, the operation is skipped silently. Check the result in
-  the kamod cache after changes in OpenCart.
+- When the search string of an operation is not found, the error is written to ``kamod.errors.log``
+  in the logs directory, the other operations are applied.
+- An optional operation is marked with ``skip="true"``. When its search string is not found, no error
+  is written:
+
+  .. code-block:: xml
+
+      <operation type="replace" skip="true">
+          <search><![CDATA[optional search]]></search>
+          <text><![CDATA[optional replacement]]></text>
+      </operation>
+
 - Errors in the patch file itself (missing file, wrong XML, missing or unsupported ``version``)
-  are written to ``kamod.errors.log`` in the logs directory. The number of lines in this file
-  is shown on the ambulance icon in the admin header.
+  are written to ``kamod.errors.log`` too, the patch is not applied and the file stays unchanged.
+- The number of lines in ``kamod.errors.log`` is shown on the ambulance icon in the admin header.
 
 Best Practices
 --------------

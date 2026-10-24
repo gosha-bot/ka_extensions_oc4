@@ -74,6 +74,8 @@ Order of Modules
 
 When several modules extend the same file, kamod puts their classes into a chain (see
 :doc:`overriding_core_files`). The order of modules in the chain is not defined, do not rely on it.
+The ``install_before`` and ``install_after`` fields of Ka Extensions for OpenCart 3 are not supported
+(see :doc:`install_json`).
 
 Dependencies
 ------------

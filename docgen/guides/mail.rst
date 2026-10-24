@@ -2,11 +2,9 @@ Sending Emails
 ==============
 
 ``\Opencart\Extension\KaExtensions\System\Mail`` sends emails rendered from twig templates with the
-store information (name, email, logo, URL) in the language of the recipient.
-
-.. warning::
-
-    The class has known issues in Ka Extensions 5.1.1.0, see `Known Issues`_ below.
+store information (name, email, logo, URL) in the language of the recipient. The email is sent with
+the mail engine and the SMTP settings of the store (*System > Settings > Mail*). When the mail engine
+is not set, the PHP ``mail()`` function is used.
 
 Basic Usage
 -----------
@@ -23,30 +21,54 @@ Basic Usage
 
 Constructor parameters:
 
-- ``$language_id`` - id of the language the email is rendered in. The store language is used when it is
-  empty;
+- ``$language_id`` - id or code (``'en-gb'``) of the language the email is rendered in. The store
+  language is used when it is empty;
 - ``$store_id`` - store whose name, email, logo and URL are used (default ``0``).
 
 ``send($from, $to, $subject, $tpl, $extra = [])``:
 
 - ``$from`` - sender email, the store email when empty;
 - ``$to`` - recipient email;
-- ``$subject`` - subject of the email. It is also passed to the templates as ``subject``, translated
-  if it is a language variable;
+- ``$subject`` - subject of the email, translated if it is a key of the mail language. It is also
+  passed to the templates as ``subject``;
 - ``$tpl`` - template route without the extension, like in ``$this->load->view()``.
   ``<tpl>.twig`` is the HTML part, ``<tpl>_txt.twig`` is the text part. For
   ``extension/my_module/mail/order_shipped`` called in the storefront these are
-  ``extension/my_module/catalog/view/template/mail/order_shipped.twig`` and ``order_shipped_txt.twig``;
+  ``extension/my_module/catalog/view/template/mail/order_shipped.twig`` and ``order_shipped_txt.twig``.
+  One of the templates may be missing: without the text template the text part is made from the HTML,
+  when both are missing the email is not sent and ``send()`` returns ``false``;
 - ``$extra`` - options: ``reply_to`` sets the *Reply-To* header.
 
 Data available in templates: ``store_name``, ``sender``, ``store_url`` (the customer login page of
 the store), ``subject``, ``logo`` (URL of the store logo) and everything added to ``$mail->data``.
+Pass the texts of your module in ``$mail->data``: the language object of the email has only the
+``default`` language file and the common texts of Ka Extensions.
+
+Common Header and Footer
+------------------------
+
+``sendContent($to, $subject, $tpl, $from = '', $extra = [])`` works like ``send()``, but puts the
+rendered templates into the common email layout of Ka Extensions: the store logo, name and URL in
+the header and a signature in the footer. The layout templates are
+``extension/ka_extensions/catalog/view/template/common/mail/`` (``header``, ``footer``, ``content`` and
+their ``_txt`` versions), the texts are in
+``extension/ka_extensions/catalog/language/<code>/common/mail/common.php`` and ``common_txt.php``.
+They are used in the admin area too.
+
+``styles.twig`` in the same directory has macros with inline styles for email clients that ignore
+``<style>``:
+
+.. code-block:: twig
+
+    {% import 'extension/ka_extensions/catalog/view/template/common/mail/styles.twig' as css %}
+    <table style="{{ css.table() }}">
 
 Templates per Language
 ----------------------
 
-A template with the language code suffix is used first if it exists, e.g. ``order_shipped_de-de.twig``,
-otherwise ``order_shipped.twig``.
+A template with the suffix of the language is used first if it exists, otherwise the template without
+suffix. The suffix is the ``code`` value of the ``default.php`` language file (``en`` for English,
+``de`` for German), e.g. ``order_shipped_de.twig`` and ``order_shipped.twig``.
 
 Attachments
 -----------
@@ -67,14 +89,3 @@ with the result: success or the error message.
 
 Without this constant, errors of sending are suppressed, so a broken mail server does not break the page.
 
-Known Issues
-------------
-
-In Ka Extensions 5.1.1.0:
-
-- the email is always sent with the PHP ``mail()`` function, the mail engine and SMTP settings of the store
-  are not used;
-- both templates, ``<tpl>.twig`` and ``<tpl>_txt.twig``, must exist, otherwise a fatal error occurs;
-- a language code (``'en-gb'``) cannot be passed to the constructor, use the language id;
-- ``sendContent()`` (an email wrapped into common header and footer templates) does not work: the common
-  templates are not included in the library.

@@ -124,8 +124,9 @@ module is always active. Uninstalling the module on the Ka Extensions page remov
 
 .. note::
 
-    The **Install** button on the Ka Extensions page is enabled for modules registered with a license
-    key or marked as free on ka-station.com.
+    The **Install** button on the Ka Extensions page is enabled only for modules registered with
+    a license key or marked as free on ka-station.com. This is a current limitation: modules of other
+    developers cannot be installed there yet. It is planned to change it in the future.
 
 Development Tips
 ----------------
