@@ -10,9 +10,19 @@ namespace Opencart\Admin\Controller\Extension\KaExtensions\Design;
 
 class Theme extends \Opencart\Admin\Model\Design\Theme {
 
-	public function editTheme(int $store_id, string $route, string $code): void {
+	public function addTheme(array $data): int {
 	
-		parent::editTheme($store_id, $route, $code);
+		$theme_id = parent::addTheme($data);
+		
+		$kamodel_kamod = $this->load->kamodel('extension/ka_extensions/kamod');
+		$kamodel_kamod->rebuildThemeCache();
+		
+		return $theme_id;
+	}
+
+	public function editTheme(int $theme_id, array $data): void {
+	
+		parent::editTheme($theme_id, $data);
 		
 		$kamodel_kamod = $this->load->kamodel('extension/ka_extensions/kamod');
 		$kamodel_kamod->rebuildThemeCache();

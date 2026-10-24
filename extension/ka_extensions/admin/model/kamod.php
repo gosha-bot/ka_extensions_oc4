@@ -27,12 +27,14 @@ class Kamod extends \Opencart\Extension\KaExtensions\System\Model {
 		
 		$this->load->model('design/theme');
 		
-		$themes = $this->model_design_theme->getThemes();
-		if (empty($themes)) {
-			return;
-		}
-	
+		// all themes, getThemes() returns 10 records by default
+		$themes = $this->model_design_theme->getThemes(0, max(1, $this->model_design_theme->getTotalThemes()));
+		
 		foreach ($themes as $theme) {
+			// disabled templates are not used by OpenCart
+			if (empty($theme['status'])) {
+				continue;
+			}
 			$code = html_entity_decode($theme['code'], ENT_QUOTES, 'UTF-8');
 			$this->kamod_manager->storeThemeFile($theme['store_id'], $theme['route'], $code);
 		}

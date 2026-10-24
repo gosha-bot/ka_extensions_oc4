@@ -42,6 +42,9 @@ class KamodBuilder {
 	// customized files saved from design theme (full dir)
 	protected $theme_cache_dir;
 	
+	// store root directory while root_dir points to a store directory of the theme cache
+	protected $main_root_dir;
+	
 	protected $kapatch;
 	
 	// these are directories with keys 'admin','catalog','system' and values of real directory names
@@ -625,6 +628,7 @@ SMTXT;
 		
 		$root_dir          = $this->root_dir;
 		$ka_twig_cache_dir = $this->ka_cache_dir . $this->templates_dir . '.default/';
+		$this->main_root_dir = $root_dir;
 		
 		foreach ($main_files as $file => $fdata) {
 			
@@ -653,6 +657,7 @@ SMTXT;
 		
 		$this->root_dir          = $root_dir;
 		$this->ka_twig_cache_dir = $ka_twig_cache_dir;
+		$this->main_root_dir     = null;
 	}
 	
 	
@@ -899,6 +904,12 @@ CMTXT;
 			$real_file = $this->root_dir . $this->service_dirs[$area] . '/' . implode('/', $parts);
 		} else {
 			$real_file = $this->root_dir . $file;
+		}
+
+		// the theme cache of a store contains only templates changed in the theme editor,
+		// child templates of modules are taken from the store directory
+		if (!file_exists($real_file) && !empty($this->main_root_dir) && $this->root_dir != $this->main_root_dir) {
+			$real_file = $this->main_root_dir . substr($real_file, strlen($this->root_dir));
 		}
 
 		return $real_file;
