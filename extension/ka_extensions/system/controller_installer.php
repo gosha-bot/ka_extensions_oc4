@@ -26,8 +26,8 @@ abstract class ControllerInstaller extends Controller {
 	protected $tables;
 	protected $ini;
 	
-	private $kamodel_common;
-	private $kamodel_patchdb;
+	protected $kamodel_common;
+	protected $kamodel_patchdb;
 	
 	/*
 		This function returns a list of extension routes which should be enabled on extension installation.
