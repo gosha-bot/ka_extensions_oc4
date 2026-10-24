@@ -220,22 +220,46 @@ class KamodManager {
 		// save config file
 		//
 		if (APPLICATION == 'Admin') {
-		
-			$admin_dir = $this->admin_dir;
-		
-			$contents = <<<CFGTXT
-<?php			
+			// other values like the safe mode code are preserved
+			$config = static::getConfig();
+			$config['admin_dir'] = $this->admin_dir;
+			static::saveConfig($config);
+		}
+	}
+
+
+	/*
+		Returns values of the kamod config file (config/kamod.php).
+	*/
+	public static function getConfig() {
+		$_ = array();
+		if (is_file(DIR_CONFIG . 'kamod.php')) {
+			include(DIR_CONFIG . 'kamod.php');
+		}
+		return $_;
+	}
+
+
+	/*
+		Saves values to the kamod config file (config/kamod.php).
+	*/
+	public static function saveConfig($config) {
+
+		$contents = <<<CFGTXT
+<?php
 /*
 	This file is regenerated automatically on kamod rebuild. Do not set any configuration parameters here manually.
 	More information on kamod can be found at https://www.ka-station.com/kamod
 */
-\$_['admin_dir'] = '$admin_dir';
+
 CFGTXT;
-		
-			file_put_contents(DIR_CONFIG . 'kamod.php', $contents);
-			if (function_exists('opcache_invalidate')) {
-				opcache_invalidate(DIR_CONFIG . 'kamod.php', true);
-			}
+		foreach ($config as $key => $value) {
+			$contents .= '$_[' . var_export((string)$key, true) . '] = ' . var_export($value, true) . ";\n";
+		}
+
+		file_put_contents(DIR_CONFIG . 'kamod.php', $contents);
+		if (function_exists('opcache_invalidate')) {
+			opcache_invalidate(DIR_CONFIG . 'kamod.php', true);
 		}
 	}
 	

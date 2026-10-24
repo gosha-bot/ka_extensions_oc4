@@ -37,3 +37,13 @@ $_['text_reg_instructions']       = '<p>Registration of your extension confirms 
 ';
 $_['text_license_key'] = 'License key';
 $_['text_register']    = 'Register';
+
+$_['txt_safe_mode'] = 'Safe Mode';
+$_['txt_title_safe_mode_code'] = 'Safe Mode Code';
+$_['txt_tooltip_safe_mode_code'] = 'Latin letters and numbers. Safe mode opens the admin area without kamod by the URL below. Leave the field empty to disable safe mode. Changing the code ends safe mode in all browsers.';
+$_['txt_safe_mode_url'] = 'Safe mode URL:';
+$_['txt_safe_mode_code_saved'] = 'The safe mode code has been saved.';
+$_['error_safe_mode_code'] = 'Only latin letters and numbers are allowed in the safe mode code.';
+$_['txt_safe_mode_active'] = 'Safe mode is on. Kamod and all Ka extensions are disabled in this browser, so this page is not available. Fix the problem (for example, disable the module that breaks the store), then exit safe mode.';
+$_['txt_safe_mode_dashboard'] = 'Go to the dashboard';
+$_['txt_safe_mode_exit'] = 'Exit safe mode';

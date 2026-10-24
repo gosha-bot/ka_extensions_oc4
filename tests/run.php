@@ -109,6 +109,7 @@ class KaExtTest {
 		$ret = array(
 			'code'     => curl_getinfo($ch, CURLINFO_HTTP_CODE),
 			'location' => '',
+			'headers'  => substr($resp, 0, $header_size),
 			'body'     => substr($resp, $header_size),
 		);
 		if (preg_match('/^Location:\s*(.*)$/mi', substr($resp, 0, $header_size), $m)) {
@@ -207,9 +208,11 @@ class KaExtTest {
 		return '?';
 	}
 
-	protected function login() {
+	protected function login($new_session = true) {
 		$this->token = '';
-		@unlink($this->cookie_file);
+		if ($new_session) {
+			@unlink($this->cookie_file);
+		}
 		$resp = $this->http('common/login');
 		if (!preg_match('/action="([^"]*login\.login[^"]*)"/', $resp['body'], $m)) {
 			$this->fail('Login form is not found');
@@ -342,6 +345,101 @@ class KaExtTest {
 		$this->checkNoErrors($resp, 'Extensions > Modules page');
 	}
 
+	/*
+		Switches to another browser session (cookie file). Returns the previous session.
+	*/
+	protected function switchSession($name) {
+		$prev = array($this->cookie_file, $this->token);
+		$this->cookie_file = $this->opt['work-dir'] . '/cookies_' . $name . '.txt';
+		$this->token = '';
+		return $prev;
+	}
+
+	protected function restoreSession($prev) {
+		list($this->cookie_file, $this->token) = $prev;
+	}
+
+	protected function saveSafeModeCode($code) {
+		return $this->http('extension/ka_extensions/extensions.saveSafeModeCode', array('safe_mode_code' => $code));
+	}
+
+	protected function getKamodConfig() {
+		$file = $this->store_dir . '/system/config/kamod.php';
+		$_ = array();
+		if (is_file($file)) {
+			include($file);
+		}
+		return $_;
+	}
+
+	/*
+		Opens the safe mode URL with the code in a new browser session, logs in and returns the dashboard.
+	*/
+	protected function openSafeMode($session, $code) {
+		$prev = $this->switchSession($session);
+		@unlink($this->cookie_file);
+		$resp = $this->httpUrl($this->base_url . 'admin/index.php?route=ka_safe_mode&code=' . urlencode($code));
+		$this->login(false);
+		$dashboard = $this->http('common/dashboard');
+		$this->restoreSession($prev);
+		return array('url' => $resp, 'dashboard' => $dashboard);
+	}
+
+	/*
+		Opens the dashboard in an existing browser session.
+	*/
+	protected function sessionDashboard($session) {
+		$prev = $this->switchSession($session);
+		$this->login(false);
+		$resp = $this->http('common/dashboard');
+		$this->restoreSession($prev);
+		return $resp;
+	}
+
+	protected function testSafeMode() {
+		$resp = $this->saveSafeModeCode('bad code!');
+		$this->check(empty($this->getKamodConfig()['safe_mode_code']), 'safe mode: a code with wrong characters is not saved');
+
+		$this->saveSafeModeCode('test1a');
+		$config = $this->getKamodConfig();
+		$this->check(isset($config['safe_mode_code']) && $config['safe_mode_code'] == 'test1a' && !empty($config['admin_dir']), 'safe mode: the code is saved to config/kamod.php');
+		$resp = $this->http('extension/ka_extensions/extensions');
+		$this->checkNoErrors($resp, 'safe mode: Ka Extensions page with the code');
+		$this->check(strpos($resp['body'], 'route=ka_safe_mode&amp;code=test1a') !== false || strpos($resp['body'], 'route=ka_safe_mode&code=test1a') !== false, 'safe mode: the page shows the safe mode URL');
+
+		$res = $this->openSafeMode('safe1', 'test1a');
+		$this->check($res['url']['code'] == 302 && preg_match('/^Set-Cookie: ka_safe_mode_code=test1a;.*HttpOnly/mi', $res['url']['headers']) && preg_match('/^Set-Cookie: ka_safe_mode_code=.*SameSite=Lax/mi', $res['url']['headers']), 'safe mode: the URL sets an httponly SameSite=Lax cookie and redirects');
+		$this->check($res['dashboard']['code'] == 200 && !$this->hasMenuItem($res['dashboard']['body']), 'safe mode: the admin area works without kamod (no Ka Extensions menu item)');
+
+		$prev = $this->switchSession('safe1');
+		$this->login(false);
+		$resp = $this->http('extension/ka_extensions/extensions');
+		$this->restoreSession($prev);
+		$this->check($resp['code'] == 200 && strpos($resp['body'], 'id="ka-safe-mode-active"') !== false && empty($this->getErrors($resp['body'])), 'safe mode: Ka Extensions page shows a safe mode message');
+
+		$res = $this->openSafeMode('wrong', 'wrongcode');
+		$this->check(stripos($res['url']['headers'], 'ka_safe_mode_code=wrongcode') === false && $this->hasMenuItem($res['dashboard']['body']), 'safe mode: a wrong code does not turn on safe mode');
+
+		// kamod rebuild keeps the code
+		$this->http('marketplace/modification.refresh');
+		$this->getMenuHtml();
+		$this->check(isset($this->getKamodConfig()['safe_mode_code']) && $this->getKamodConfig()['safe_mode_code'] == 'test1a', 'safe mode: the code is kept after the kamod cache rebuild');
+
+		$this->saveSafeModeCode('test2b');
+		$this->check($this->hasMenuItem($this->sessionDashboard('safe1')['body']), 'safe mode: the old code stops working after the code is changed');
+		$this->check(!$this->hasMenuItem($this->openSafeMode('safe2', 'test2b')['dashboard']['body']), 'safe mode: the new code works at once');
+
+		$this->openSafeMode('safe4', 'test2b');
+		$prev = $this->switchSession('safe4');
+		$this->httpUrl($this->base_url . 'admin/index.php?route=ka_safe_mode');
+		$this->restoreSession($prev);
+		$this->check($this->hasMenuItem($this->sessionDashboard('safe4')['body']), 'safe mode: the exit URL turns safe mode off');
+
+		$this->saveSafeModeCode('');
+		$this->check($this->hasMenuItem($this->sessionDashboard('safe2')['body']) && $this->hasMenuItem($this->openSafeMode('safe3', 'test2b')['dashboard']['body']), 'safe mode: an empty code disables safe mode');
+		$this->checkNoErrors($this->httpUrl($this->base_url . 'index.php'), 'safe mode: storefront works');
+	}
+
 	protected function testStorefront() {
 		$this->checkNoErrors($this->httpUrl($this->base_url . 'index.php'), 'storefront home');
 		$this->checkNoErrors($this->httpUrl($this->base_url . 'index.php?route=product/category&path=20'), 'storefront category');
@@ -367,8 +465,10 @@ class KaExtTest {
 	public function run() {
 		$this->testPackage();
 		$this->setup();
-		$tests = array('testInstall', 'testModification', 'testMenu', 'testStorefront', 'testUninstall');
-		if (isset($this->opt['keep'])) {
+		$tests = array('testInstall', 'testModification', 'testMenu', 'testSafeMode', 'testStorefront', 'testUninstall');
+		if (!empty($this->opt['tests'])) {
+			$tests = explode(',', $this->opt['tests']);
+		} elseif (isset($this->opt['keep'])) {
 			array_pop($tests);
 		}
 		foreach ($tests as $test) {
@@ -383,9 +483,9 @@ class KaExtTest {
 	}
 }
 
-$opt = getopt('', array('oc:', 'work-dir:', 'port:', 'db:', 'keep'));
+$opt = getopt('', array('oc:', 'work-dir:', 'port:', 'db:', 'tests:', 'keep'));
 if (empty($opt['oc'])) {
-	fwrite(STDERR, "Usage: php tests/run.php --oc=<opencart zip or dir> [--port=8096] [--work-dir=...] [--db=...]\n");
+	fwrite(STDERR, "Usage: php tests/run.php --oc=<opencart zip or dir> [--port=8096] [--work-dir=...] [--db=...] [--tests=testInstall,testSafeMode] [--keep]\n");
 	exit(1);
 }
 $opt += array('port' => '8096');

@@ -21,7 +21,8 @@ php tests/run.php --oc=opencart-4.1.0.3.zip --port=8097
 
 Options: `--port` (php built-in server port, default 8096), `--work-dir` (default `/tmp/ka_ext_test_<port>`),
 `--db` (default `kat_ext_<port>`, it is dropped and created again), `--keep` (skip uninstall and leave
-the store running for manual checks).
+the store running for manual checks), `--tests` (comma separated test methods to run after the store
+setup, for example `--tests=testInstall,testModification,testSafeMode`).
 
 ## What is tested
 
@@ -30,6 +31,9 @@ the store running for manual checks).
 - `testModification` - enable 'Ka Extensions Ocmod', refresh, framework.php is patched, all ocmod operations
   are applied, the Modification page loads without errors
 - `testMenu` - 'Ka Extensions' item is in the Extensions menu, the Ka Extensions page opens
+- `testSafeMode` - the safe mode code is saved on the Ka Extensions page (wrong characters are rejected), the
+  `route=ka_safe_mode&code=` URL sets an httponly SameSite=Lax cookie and turns kamod off for this browser only,
+  a wrong code is ignored, the code survives a kamod rebuild, a changed or empty code and the exit URL turn safe mode off
 - `testStorefront` - storefront pages load without PHP errors
 - `testUninstall` - uninstall through Extension Installer, files and modification are removed, the menu item is gone
 

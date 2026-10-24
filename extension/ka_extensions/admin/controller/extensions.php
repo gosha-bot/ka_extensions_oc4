@@ -141,8 +141,59 @@ class Extensions extends \Opencart\Extension\KaExtensions\System\Controller {
 		$this->data['user_token'] = $this->session->data['user_token'];
 		
 		$this->data['is_ka_cache_valid'] = KamodManager::getInstance()->isKamodCacheValid();
+
+		// safe mode
+		//
+		$config = KamodManager::getConfig();
+		$this->data['safe_mode_code']        = isset($config['safe_mode_code']) ? $config['safe_mode_code'] : '';
+		$this->data['safe_mode_url']         = HTTP_SERVER . 'index.php?route=ka_safe_mode&code=';
+		$this->data['action_save_safe_mode'] = $this->url->linka('extension/ka_extensions/extensions|saveSafeModeCode');
 		
 		$this->showPage('extension/ka_extensions/extensions');
+	}
+
+
+	/*
+		The same users who always see this page (see kamod startup/permission) or users with the modify
+		permission for this page can change the safe mode code.
+	*/
+	protected function canModifySafeMode() {
+		if ($this->user->hasPermission('modify', 'extension/ka_extensions/extensions')) {
+			return true;
+		}
+		return $this->user->hasPermission('access', 'user/user_permission')
+			&& $this->user->hasPermission('modify', 'user/user_permission');
+	}
+
+
+	/*
+		Saves the safe mode code to the kamod config file. An empty code disables the safe mode.
+	*/
+	public function saveSafeModeCode() {
+
+		if ($this->request->server['REQUEST_METHOD'] == 'POST') {
+
+			$code = isset($this->request->post['safe_mode_code']) ? trim((string)$this->request->post['safe_mode_code']) : '';
+
+			if (!$this->canModifySafeMode()) {
+				$this->addTopMessage($this->language->get('error_permission'), 'E');
+
+			} elseif (!preg_match('/^[A-Za-z0-9]*$/', $code)) {
+				$this->addTopMessage($this->language->get('error_safe_mode_code'), 'E');
+
+			} else {
+				$config = KamodManager::getConfig();
+				if (empty($config['admin_dir'])) {
+					$config['admin_dir'] = basename(DIR_APPLICATION);
+				}
+				$config['safe_mode_code'] = $code;
+				KamodManager::saveConfig($config);
+
+				$this->addTopMessage($this->language->get('txt_safe_mode_code_saved'));
+			}
+		}
+
+		$this->response->redirect($this->url->linka('extension/ka_extensions/extensions'));
 	}
 
 	
